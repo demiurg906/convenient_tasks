@@ -55,14 +55,6 @@ class Subsection(AbstractSection):
     pass
 
 
-class TaskSection(models.Model):
-    """
-    Модель для части задачи -- условия, подсказки, решения или ответа
-    содержит в себе текст и 0 или больше картинок
-    """
-    text = models.TextField(default='')
-
-
 class Task(models.Model):
     """
     Модель для задачи
@@ -80,6 +72,8 @@ class Task(models.Model):
     grades = models.ManyToManyField(Grade, blank=True)  # классы для данной задачи
 
     source = models.OneToOneField(TaskSource, null=True)  # источник задачи
+
+    tex_used = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Задача {str(self.pk)}'
@@ -107,6 +101,37 @@ class Task(models.Model):
 
     has_answer.boolean = True
     has_answer.short_description = 'Answer'
+
+
+class TaskSection(models.Model):
+    """
+    Модель для части задачи -- условия, подсказки, решения или ответа
+    содержит в себе текст и 0 или больше картинок
+    """
+    text = models.TextField(default='')
+
+    def __str__(self):
+        try:
+            if self.taskcondition is not None:
+                return str(self.taskcondition)
+        except self.DoesNotExist as e:
+            pass
+        try:
+            if self.tasktip is not None:
+                return str(self.tasktip)
+        except self.DoesNotExist as e:
+            pass
+        try:
+            if self.tasksolution is not None:
+                return str(self.tasksolution)
+        except self.DoesNotExist as e:
+            pass
+        try:
+            if self.taskanswer is not None:
+                return str(self.taskanswer)
+        except self.DoesNotExist as e:
+            pass
+        return f'Task section {self.pk}'
 
 
 class TaskCondition(TaskSection):
@@ -151,4 +176,4 @@ class Image(models.Model):
     image_tag.short_description = 'Image'
 
     def __str__(self):
-        return f'image {self.number} for {self.section}'
+        return f'image {self.number} of "{self.section}"'

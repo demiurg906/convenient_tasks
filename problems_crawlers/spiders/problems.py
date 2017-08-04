@@ -93,7 +93,7 @@ class ProblemsSpider(scrapy.Spider):
         grades = list(map(lambda n: int(n), re.findall(r'\d+', grades)))
 
         # Task
-        task_dict, image_urls = self.extract_task(content, response)
+        task_dict, image_urls, tex_used = self.extract_task(content, response)
 
         yield ParseResultItem(
             source=source,
@@ -102,10 +102,12 @@ class ProblemsSpider(scrapy.Spider):
             task=task_dict,
             section=SECTION,
             subsection=subsection,
-            image_urls=image_urls
+            image_urls=image_urls,
+            tex_used = tex_used
         )
 
     def extract_task(self, content: scrapy.Selector, response: HtmlResponse):
+        # TODO: обновить документацию
         """
         Вытаскивает информацию о задаче из содержимого страницы
         :return: словарь с ключами по именам секций задачи и со значениями вида
@@ -122,6 +124,7 @@ class ProblemsSpider(scrapy.Spider):
         image_urls = []
         images_urls_of_section = []
         text_iterator = enumerate(text)
+        tex_used = False
         while True:
             try:
                 i, line = next(text_iterator)
@@ -157,6 +160,8 @@ class ProblemsSpider(scrapy.Spider):
                         image_url = response.urljoin(image_src)
                         image_urls.append(image_url)
                         images_urls_of_section.append(image_url)
+                    else:
+                        tex_used = True
                 continue
             if line == '<div':
                 next(text_iterator)
@@ -173,7 +178,7 @@ class ProblemsSpider(scrapy.Spider):
                 if line:
                     session_text.append(line)
 
-        return task_dict, image_urls
+        return task_dict, image_urls, tex_used
 
 
 def set_get_parameter(url, name, value):

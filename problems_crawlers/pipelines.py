@@ -40,6 +40,7 @@ class ProblemsCrawlersPipeline(object):
         task['section'] = section
         task['subsection'] = subsection
         task['source'] = source
+        task['tex_used'] = item['tex_used']
         task = task.save()
 
         for field, (text, pictures) in item['task'].items():

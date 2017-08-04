@@ -71,3 +71,4 @@ class ParseResultItem(scrapy.Item):
     subsection = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
+    tex_used = scrapy.Field()
