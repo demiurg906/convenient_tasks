@@ -7,7 +7,7 @@
 
 import scrapy
 
-from problems.models import Grade, TaskSource, Section, Subsection, TaskSection, Image, Task
+from problems.models import Grade, TaskSource, Section, Subsection, Image, Task, TaskAnswer, TaskSolution, TaskCondition, TaskTip
 from scrapy_djangoitem import DjangoItem
 
 
@@ -27,8 +27,28 @@ class SubsectionItem(DjangoItem):
     django_model = Subsection
 
 
-class TaskSectionItem(DjangoItem):
-    django_model = TaskSection
+class TaskConditionItem(DjangoItem):
+    django_model = TaskCondition
+
+
+class TaskTipItem(DjangoItem):
+    django_model = TaskTip
+
+
+class TaskSolutionItem(DjangoItem):
+    django_model = TaskSolution
+
+
+class TaskAnswerItem(DjangoItem):
+    django_model = TaskAnswer
+
+
+TASK_SECTIONS = {
+    'condition': TaskConditionItem,
+    'tip': TaskTipItem,
+    'solution': TaskSolutionItem,
+    'answer': TaskAnswerItem
+}
 
 
 class ImageItem(DjangoItem):

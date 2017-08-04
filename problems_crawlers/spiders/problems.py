@@ -1,6 +1,6 @@
 from functools import partial
 from urllib.parse import urlparse, parse_qs, urlsplit, urlencode, urlunsplit
-from problems_crawlers.items import GradeItem, TaskSectionItem, TaskSourceItem, SectionItem, ImageItem, TaskItem, \
+from problems_crawlers.items import GradeItem, TaskSourceItem, SectionItem, ImageItem, TaskItem, \
     ParseResultItem
 
 import scrapy
@@ -28,6 +28,7 @@ TABLE_OF_CONTEXT_URL = 'http://problems.ru/view_by_subject_new.php?parent=1302'
 # SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=65330'
 # задача с двумя TeX версткой
 SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=102718'
+
 GET_PARAMETER_TEMPLATE = '&start='
 
 SECTION = 'Математика'
@@ -39,13 +40,13 @@ class ProblemsSpider(scrapy.Spider):
     def start_requests(self):
         start_url = getattr(self, 'start_url', None)
 
-        # if start_url is None:
-        #     start_url = TABLE_OF_CONTEXT_URL + str(START_TASK_NUMBER)
-        # yield scrapy.Request(url=start_url, callback=self.parse_table_of_context)
-
         if start_url is None:
-            start_url = SINGLE_TASK_URL
-        yield scrapy.Request(url=start_url, callback=self.parse_task)
+            start_url = TABLE_OF_CONTEXT_URL + str(START_TASK_NUMBER)
+        yield scrapy.Request(url=start_url, callback=self.parse_table_of_context)
+
+        # if start_url is None:
+        #     start_url = SINGLE_TASK_URL
+        # yield scrapy.Request(url=start_url, callback=self.parse_task)
 
     def parse_table_of_context(self, response: HtmlResponse):
         ul = response.css('ul.componentboxlist')
@@ -78,7 +79,7 @@ class ProblemsSpider(scrapy.Spider):
         # Source
         task_name = response.css('table.viewingtable div.componentboxheader::text').extract_first().strip()
         source = TaskSourceItem()
-        source['name'] = task_name
+        source['name'] = f'{task_name} (problems.u)'
         source['url'] = response.url
 
         content = response.css('table.viewingtable .componentboxcontents')
@@ -111,39 +112,67 @@ class ProblemsSpider(scrapy.Spider):
                  text, images, где images -- список кортежей вида (image_url, tex_view)
         """
         # Вытаскивание текста
-        text = ' '.join(''.join(content.css('::text').extract()).split())
-        sections = CONTENT_PATTERN.findall(text)
-        parts = list(map(lambda s: s.strip(), CONTENT_PATTERN.split(text)))
-        names = {section: sections.index(section) + 1 for section in DEFAULT_SECTIONS if section in sections}
-        task_dict = {DEFAULT_NAMES[section]: (parts[i], []) for section, i in names.items()}
+        # text = list(map(lambda s: s.strip(), ''.join(content.extract()).split('\n')))
+        # text = list(map(lambda s: s.strip(), re.split(r'(<br>|<p>|</p>|>\n)', ''.join(content.extract()))))
+        text = list(map(lambda s: s.strip(), re.split(r'(</?\w{,10}|>)', ''.join(content.extract()))))
 
-        # вытаскивание картинок
-        def check_h3(s: str):
-            for section in DEFAULT_NAMES:
-                if s.startswith('h3') and section in s:
-                    return DEFAULT_NAMES[section]
-            return False
-
-        section = None
+        task_dict = {}
+        current_section = ''
+        session_text = []
         image_urls = []
-        for line in content.extract_first().split('<'):
-            title = check_h3(line)
-            if title:
-                section = title
+        images_urls_of_section = []
+        text_iterator = enumerate(text)
+        while True:
+            try:
+                i, line = next(text_iterator)
+                new_section = None
+            except StopIteration:
+                break
+
+            if line == '<h3':
+                next(text_iterator)
+                next(text_iterator)
+                i, line = next(text_iterator)
+                new_section = re.findall(r'(Условие|Подсказка|Решение|Ответ|Источники и прецеденты использования)', line)
+
+            if (not new_section) and (not current_section):
                 continue
-            if section and line.startswith('img'):
+            if new_section:
+                if current_section:
+                    session_text = ' '.join(session_text)
+                    task_dict[DEFAULT_NAMES[current_section]] = session_text, images_urls_of_section
+                current_section = new_section[0]
+                if current_section == 'Источники и прецеденты использования':
+                    break
+                session_text = []
+                images_urls_of_section = []
+                continue
+            if '<img' in line:
+                i, line = next(text_iterator)
                 src = re.search(r'src=\".+\d+\"', line).group()
                 if src:
-                    tex = re.search(r'alt=\"\$(.|\n)+\$\"', line).group()
-                    tex_src = ''
-                    if tex:
-                        tex_src = tex[5:-1]
-                        image_src = ''
-                    else:
+                    tex = re.search(r'alt=\"\$(.|\n)+\$\"', line)
+                    if tex is None:
                         image_src = src[5:-1]
                         image_url = response.urljoin(image_src)
                         image_urls.append(image_url)
-                    task_dict[section][1].append((image_url, tex_src))
+                        images_urls_of_section.append(image_url)
+                continue
+            if line == '<div':
+                next(text_iterator)
+            if re.match(r'(</?\w{,10}|>)', line):
+                continue
+            if line:
+                old_line = line
+                if 'Также доступны документы в формате' in line or \
+                        ('href' in line or line == 'TeX') or \
+                        (line.endswith('>') and not line.endswith('-->')):
+                    continue
+                line = line.strip()
+                line = re.sub(r'(^>|!-- MATH|--|\n)', '', line, re.S).strip()
+                if line:
+                    session_text.append(line)
+
         return task_dict, image_urls
 
 

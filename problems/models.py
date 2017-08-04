@@ -62,31 +62,36 @@ class TaskSection(models.Model):
     содержит в себе текст и 0 или больше картинок
     """
     text = models.TextField(default='')
-    type = models.CharField(max_length=32)
 
-    def get_parent(self):
-        if self.type == 'condition':
-            return self.condition
-        if self.type == 'tip':
-            return self.tip
-        if self.type == 'solution':
-            return self.solution
-        if self.type == 'answer':
-            return self.answer
-        raise RuntimeError(f'Неверный тип части задачи -- {self.type}')
 
+class TaskCondition(TaskSection):
     def __str__(self):
-        return f'{self.type} for {self.get_parent()}'
+        return f'condition for {self.condition}'
+
+
+class TaskTip(TaskSection):
+    def __str__(self):
+        return f'tip for {self.tip}'
+
+
+class TaskSolution(TaskSection):
+    def __str__(self):
+        return f'solution for {self.solution}'
+
+
+class TaskAnswer(TaskSection):
+    def __str__(self):
+        return f'answer for {self.answer}'
 
 
 class Task(models.Model):
     """
     Модель для задачи
     """
-    condition = models.OneToOneField(TaskSection, related_name='condition')  # условие
-    tip = models.OneToOneField(TaskSection, related_name='tip', null=True)  # подсказка
-    solution = models.OneToOneField(TaskSection, related_name='solution', null=True)  # решение
-    answer = models.OneToOneField(TaskSection, related_name='answer', null=True)  # ответ
+    condition = models.OneToOneField(TaskCondition, related_name='condition')  # условие
+    tip = models.OneToOneField(TaskTip, related_name='tip', null=True)  # подсказка
+    solution = models.OneToOneField(TaskSolution, related_name='solution', null=True)  # решение
+    answer = models.OneToOneField(TaskAnswer, related_name='answer', null=True)  # ответ
 
     tags = TagField()
 
@@ -100,6 +105,12 @@ class Task(models.Model):
     def __str__(self):
         return f'Задача {str(self.pk)}'
 
+    def task_name(self):
+        return str(self)
+
+    task_name.short_description = 'Task name'
+    task_name.admin_order_field = 'pk'
+
 
 class Image(models.Model):
     """
@@ -107,7 +118,6 @@ class Image(models.Model):
     """
     image = models.ImageField(null=True)  # сама картинка
     number = models.IntegerField()  # ее номер в задаче
-    tex_src = models.TextField(null=True)  # TeX представление картинки
     section = models.ForeignKey(TaskSection, on_delete=models.CASCADE)  # ссылка на задачу
 
     def image_tag(self):
