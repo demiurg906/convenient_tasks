@@ -1,12 +1,13 @@
 import nested_inline.admin
 
 from django.contrib import admin
+from django import forms
+from django.db import models
+from django.forms import TextInput, Textarea
 
-from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskTip, TaskCondition, TaskAnswer, TaskSolution
-
-
-# INLINE_CLASS = admin.TabularInline
-INLINE_CLASS = nested_inline.admin.NestedTabularInline
+# from problems.forms import TexTextInput
+from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskTip, TaskCondition, \
+    TaskAnswer, TaskSolution, TaskSection
 
 
 @admin.register(Image)
@@ -22,35 +23,33 @@ class ImageInline(nested_inline.admin.NestedStackedInline):
     readonly_fields = ('image_tag',)
 
 
-@admin.register(TaskAnswer, TaskCondition, TaskTip, TaskSolution)
-class TaskSectionAdmin(admin.ModelAdmin):
-    fields = ('text', )
+class TaskSectionInline(nested_inline.admin.NestedTabularInline):
+    model = TaskSection
     inlines = (ImageInline, )
+    # formfield_overrides = {
+    #     models.TextField: {'widget': TexTextInput},
+    # }
 
 
-class TaskConditionInline(INLINE_CLASS):
+class TaskConditionInline(TaskSectionInline):
     model = TaskCondition
-    inlines = (ImageInline, )
 
 
-class TaskTipInline(INLINE_CLASS):
+class TaskTipInline(TaskSectionInline):
     model = TaskTip
-    inlines = (ImageInline, )
 
 
-class TaskSolutionInline(INLINE_CLASS):
+class TaskSolutionInline(TaskSectionInline):
     model = TaskSolution
-    inlines = (ImageInline, )
 
 
-class TaskAnswerInline(INLINE_CLASS):
+class TaskAnswerInline(TaskSectionInline):
     model = TaskAnswer
-    inlines = (ImageInline, )
 
 
 @admin.register(Task)
 class TaskAdmin(nested_inline.admin.NestedModelAdmin):
-    fields = ('tags', 'section', 'subsection', 'grades', 'source')
+    fields = ('tags', 'section', 'subsection', 'grades', 'source', 'tex_used')
     list_display = ('task_name', 'tex_used', 'has_tip', 'has_solution', 'has_answer', 'section', 'subsection')
     inlines = (TaskConditionInline, TaskTipInline, TaskSolutionInline, TaskAnswerInline)
 
