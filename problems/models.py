@@ -4,7 +4,6 @@ from django.db import models, IntegrityError
 from django.utils.safestring import mark_safe
 from tagging.fields import TagField
 from tagging.models import Tag
-from tagging.registry import register
 
 
 class User(AbstractUser):
@@ -64,34 +63,14 @@ class TaskSection(models.Model):
     text = models.TextField(default='')
 
 
-class TaskCondition(TaskSection):
-    def __str__(self):
-        return f'condition for {self.condition}'
-
-
-class TaskTip(TaskSection):
-    def __str__(self):
-        return f'tip for {self.tip}'
-
-
-class TaskSolution(TaskSection):
-    def __str__(self):
-        return f'solution for {self.solution}'
-
-
-class TaskAnswer(TaskSection):
-    def __str__(self):
-        return f'answer for {self.answer}'
-
-
 class Task(models.Model):
     """
     Модель для задачи
     """
-    condition = models.OneToOneField(TaskCondition, related_name='condition')  # условие
-    tip = models.OneToOneField(TaskTip, related_name='tip', null=True)  # подсказка
-    solution = models.OneToOneField(TaskSolution, related_name='solution', null=True)  # решение
-    answer = models.OneToOneField(TaskAnswer, related_name='answer', null=True)  # ответ
+    # condition = models.OneToOneField(TaskCondition, related_name='condition')  # условие
+    # tip = models.OneToOneField(TaskTip, related_name='tip', null=True)  # подсказка
+    # solution = models.OneToOneField(TaskSolution, related_name='solution', null=True)  # решение
+    # answer = models.OneToOneField(TaskAnswer, related_name='answer', null=True)  # ответ
 
     tags = TagField()
 
@@ -107,6 +86,7 @@ class Task(models.Model):
 
     def task_name(self):
         return str(self)
+
     task_name.short_description = 'Task name'
     task_name.admin_order_field = 'pk'
 
@@ -127,6 +107,34 @@ class Task(models.Model):
 
     has_answer.boolean = True
     has_answer.short_description = 'Answer'
+
+
+class TaskCondition(TaskSection):
+    condition = models.OneToOneField(Task, related_name='condition')  # условие
+
+    def __str__(self):
+        return f'condition for {self.condition}'
+
+
+class TaskTip(TaskSection):
+    tip = models.OneToOneField(Task, related_name='tip')  # подсказка
+
+    def __str__(self):
+        return f'tip for {self.tip}'
+
+
+class TaskSolution(TaskSection):
+    solution = models.OneToOneField(Task, related_name='solution')  # решение
+
+    def __str__(self):
+        return f'solution for {self.solution}'
+
+
+class TaskAnswer(TaskSection):
+    answer = models.OneToOneField(Task, related_name='answer')  # ответ
+
+    def __str__(self):
+        return f'answer for {self.answer}'
 
 
 class Image(models.Model):

@@ -39,10 +39,13 @@ class ProblemsCrawlersPipeline(object):
         task = TaskItem()
         task['section'] = section
         task['subsection'] = subsection
+        task['source'] = source
+        task = task.save()
 
         for field, (text, pictures) in item['task'].items():
             task_section = TASK_SECTIONS[field]()
             task_section['text'] = text
+            task_section[field] = task
             task_section = task_section.save()
             for n, image_url in enumerate(pictures):
                 image = ImageItem()
@@ -50,9 +53,7 @@ class ProblemsCrawlersPipeline(object):
                 image['image'] = image_dict[image_url]
                 image['number'] = n + 1
                 image.save()
-            task[field] = task_section
-        task['source'] = source
-        task = task.save()
+
         tags = set()
 
         def add_tag(item):

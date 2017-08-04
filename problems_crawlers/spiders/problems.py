@@ -79,7 +79,7 @@ class ProblemsSpider(scrapy.Spider):
         # Source
         task_name = response.css('table.viewingtable div.componentboxheader::text').extract_first().strip()
         source = TaskSourceItem()
-        source['name'] = f'{task_name} (problems.u)'
+        source['name'] = f'{task_name} (problems.ru)'
         source['url'] = response.url
 
         content = response.css('table.viewingtable .componentboxcontents')
