@@ -107,9 +107,26 @@ class Task(models.Model):
 
     def task_name(self):
         return str(self)
-
     task_name.short_description = 'Task name'
     task_name.admin_order_field = 'pk'
+
+    def has_tip(self):
+        return self.tip is not None
+
+    has_tip.boolean = True
+    has_tip.short_description = 'Tip'
+
+    def has_solution(self):
+        return self.solution is not None
+
+    has_solution.boolean = True
+    has_solution.short_description = 'Solution'
+
+    def has_answer(self):
+        return self.answer is not None
+
+    has_answer.boolean = True
+    has_answer.short_description = 'Answer'
 
 
 class Image(models.Model):
