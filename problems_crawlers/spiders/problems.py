@@ -142,7 +142,9 @@ class ProblemsSpider(scrapy.Spider):
                 continue
             if new_section:
                 if current_section:
-                    session_text = ' '.join(session_text)
+                    session_text = ' '.join(filter(lambda s: s, session_text))
+                    session_text = ' '.join(session_text.split())
+                    session_text.replace('\'', '')
                     task_dict[DEFAULT_NAMES[current_section]] = session_text, images_urls_of_section
                 current_section = new_section[0]
                 if current_section == 'Источники и прецеденты использования':
@@ -175,6 +177,7 @@ class ProblemsSpider(scrapy.Spider):
                     continue
                 line = line.strip()
                 line = re.sub(r'(^>|!-- MATH|--|\n)', '', line, re.S).strip()
+                line = line.replace('\\begin{displaymath}', '$').replace('\\end{displaymath}', '$')
                 if line:
                     session_text.append(line)
 

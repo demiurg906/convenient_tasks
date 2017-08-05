@@ -1,0 +1,19 @@
+<div style="float: left;
+            display: block;
+            width: 45%;
+            ">
+    <p>
+        {% if widget.value %}
+            {{ widget.attrs.math | safe }}
+        {% endif %}
+    </p>
+</div>
+
+<div style="float: right;
+            display: block;
+            width: 45%;
+            ">
+    <textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+    {% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>
+

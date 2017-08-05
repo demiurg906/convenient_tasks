@@ -1,11 +1,10 @@
 import nested_inline.admin
 
 from django.contrib import admin
-from django import forms
 from django.db import models
-from django.forms import TextInput, Textarea
 
 # from problems.forms import TexTextInput
+from problems.forms import EditableTexTextarea
 from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskTip, TaskCondition, \
     TaskAnswer, TaskSolution, TaskSection
 
@@ -26,9 +25,9 @@ class ImageInline(nested_inline.admin.NestedStackedInline):
 class TaskSectionInline(nested_inline.admin.NestedTabularInline):
     model = TaskSection
     inlines = (ImageInline, )
-    # formfield_overrides = {
-    #     models.TextField: {'widget': TexTextInput},
-    # }
+    formfield_overrides = {
+        models.TextField: {'widget': EditableTexTextarea},
+    }
 
 
 class TaskConditionInline(TaskSectionInline):
