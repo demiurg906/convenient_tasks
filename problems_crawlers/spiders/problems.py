@@ -26,8 +26,10 @@ TABLE_OF_CONTEXT_URL = 'http://problems.ru/view_by_subject_new.php?parent=1302'
 # SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=104117'
 # задача с двумя подтемами
 # SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=65330'
-# задача с двумя TeX версткой
-SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=102718'
+# задача с TeX версткой
+# SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=102718'
+# задача с классами в ненужных тегах
+SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=61406'
 
 GET_PARAMETER_TEMPLATE = '&start='
 
@@ -165,8 +167,10 @@ class ProblemsSpider(scrapy.Spider):
                     else:
                         tex_used = True
                 continue
-            if line == '<div':
-                next(text_iterator)
+            if re.match(r'<\w{1,10}', line):
+                while line != '>':
+                    i, line = next(text_iterator)
+                continue
             if re.match(r'(</?\w{,10}|>)', line):
                 continue
             if line:
