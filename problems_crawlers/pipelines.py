@@ -32,17 +32,18 @@ class ProblemsCrawlersPipeline(object):
         for image in item['images']:
             image_dict[image['url']] = os.path.normpath(image['path'])
 
-        source = item['source'].save()
         section = self.save_unique_item(Section, SectionItem, 'name', item['section'], True)
         subsection = self.save_unique_item(Subsection, SubsectionItem, 'name', item['subsection'], True)
 
         task = TaskItem()
         task['section'] = section
         task['subsection'] = subsection
-        task['source'] = source
         task['tex_used'] = item['tex_used']
         task = task.save()
 
+        source = item['source']
+        source['source'] = task
+        source = source.save()
         for field, (text, pictures) in item['task'].items():
             task_section = TASK_SECTIONS[field]()
             task_section['text'] = text

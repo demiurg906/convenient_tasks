@@ -26,15 +26,6 @@ class Grade(models.Model):
         return str(self.PATTERN.format(self.grade))
 
 
-class TaskSource(models.Model):
-    name = models.CharField(max_length=100)  # название источника
-    url = models.URLField(null=True)  # ссылка на источник
-    author = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)  # ссылка на автора
-
-    def __str__(self):
-        return f'source for {self.task}'
-
-
 class AbstractSection(models.Model):
     """
     Модель раздела задач
@@ -59,19 +50,12 @@ class Task(models.Model):
     """
     Модель для задачи
     """
-    # condition = models.OneToOneField(TaskCondition, related_name='condition')  # условие
-    # tip = models.OneToOneField(TaskTip, related_name='tip', null=True)  # подсказка
-    # solution = models.OneToOneField(TaskSolution, related_name='solution', null=True)  # решение
-    # answer = models.OneToOneField(TaskAnswer, related_name='answer', null=True)  # ответ
-
     tags = TagField()
 
     section = models.ForeignKey(Section, related_name='section')  # основной раздел (физика/математика)
     subsection = models.ForeignKey(Subsection, related_name='subsection')  # подраздел
 
     grades = models.ManyToManyField(Grade, blank=True)  # классы для данной задачи
-
-    source = models.OneToOneField(TaskSource, null=True)  # источник задачи
 
     tex_used = models.BooleanField(default=False)
 
@@ -177,3 +161,13 @@ class Image(models.Model):
 
     def __str__(self):
         return f'image {self.number} of "{self.section}"'
+
+
+class TaskSource(models.Model):
+    name = models.CharField(max_length=100, null=True)  # название источника
+    url = models.URLField(null=True)  # ссылка на источник
+    author = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)  # ссылка на автора
+    source = models.OneToOneField(Task)
+
+    def __str__(self):
+        return f'source for {self.source}'
