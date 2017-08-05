@@ -10,6 +10,7 @@ from problems.models import Task, User, TaskSource, Section, Subsection, Image, 
 
 class TaskSourceInline(nested_inline.admin.NestedStackedInline):
     model = TaskSource
+    readonly_fields = ('author', )
 
 
 class ImageInline(nested_inline.admin.NestedStackedInline):
@@ -43,10 +44,28 @@ class TaskAnswerInline(TaskSectionInline):
     model = TaskAnswer
 
 
+def custom_titled_filter(title):
+    """
+    функция для list_filter для переопределния заголовка сортировки
+    """
+    class Wrapper(admin.FieldListFilter):
+        def __new__(cls, *args, **kwargs):
+            instance = admin.FieldListFilter.create(*args, **kwargs)
+            instance.title = title
+            return instance
+    return Wrapper
+
+
 @admin.register(Task)
 class TaskAdmin(nested_inline.admin.NestedModelAdmin):
-    fields = ('tags', 'section', 'subsection', 'grades', 'tex_used')
     list_display = ('task_name', 'tex_used', 'has_tip', 'has_solution', 'has_answer', 'section', 'subsection')
-    inlines = (TaskSourceInline, TaskConditionInline, TaskTipInline, TaskSolutionInline, TaskAnswerInline)
+    list_filter = ('tex_used',
+                   ('section__name', custom_titled_filter('Section')),
+                   ('subsection__name', custom_titled_filter('Subsection'))
+                   )
 
-admin.site.register([User, TaskSource, Section, Subsection, Grade])
+    fields = ('tags', 'section', 'subsection', 'grades', 'tex_used')
+    inlines = (TaskSourceInline, TaskConditionInline, TaskTipInline, TaskSolutionInline, TaskAnswerInline)
+    save_on_top = True
+
+admin.site.register([User, Section, Subsection, Grade])
