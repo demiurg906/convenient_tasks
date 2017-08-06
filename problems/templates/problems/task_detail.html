@@ -1,5 +1,7 @@
 {% extends 'problems/base.html' %}
 
+{% load problems_extras %}
+
 {% block title %}
     {{ block.super }} Task № {{ task.pk }}
 {% endblock %}
@@ -12,27 +14,27 @@
 {% block body %}
     <div class="row">
         <h3>Условие</h3>
-        <p>{{ task.condition.text }}</p>
+        <p>{{ task.condition.text|math|safe }}</p>
     </div>
 
     {% if task.has_tip %}
     <div class="row">
         <h3>Подсказка</h3>
-        <p>{{ task.tip.text }}</p>
+        <p>{{ task.tip.text|math }}</p>
     </div>
     {% endif %}
 
     {% if task.has_solution %}
         <div class="row">
             <h3>Решение</h3>
-            <p>{{ task.solution.text }}</p>
+            <p>{{ task.solution.text|math }}</p>
         </div>
     {% endif %}
 
     {% if task.has_answer %}
         <div class="row">
             <h3>Ответ</h3>
-            <p>{{ task.answer.text }}</p>
+            <p>{{ task.answer.text|math }}</p>
         </div>
     {% endif %}
 {% endblock %}

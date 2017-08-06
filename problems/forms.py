@@ -4,7 +4,7 @@ import re
 
 from django import forms
 
-logger = logging.getLogger(__name__)
+
 
 
 class EditableTexTextarea(forms.Textarea):
