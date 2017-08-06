@@ -6,7 +6,7 @@
     {{ block.super }} Task № {{ task.pk }}
 {% endblock %}
 
-{% block extra_nav_buttons %}
+{% block extra_nav_buttons_left %}
     <li><a href="/task/{{ task.pk|add:-1 }}">Prev</a></li>
     <li><a href="/task/{{ task.pk|add:1 }}">Next</a></li>
 {% endblock %}

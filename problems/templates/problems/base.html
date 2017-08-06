@@ -22,9 +22,22 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/ask/">Tasks</a></li>
-                {% block extra_nav_buttons %} {% endblock %}
+                {% block extra_nav_buttons_left %} {% endblock %}
             </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input id="search_input" type="number" class="form-control" placeholder="Go to task"
+                           {% if task %}
+                                value="{{ task.pk }}"
+                           {% else %}
+                                value="1"
+                           {% endif %}
+                    >
+                </div>
+                <button id="search_button" type="button" class="btn btn-default">Искать</button>
+            </form>
             <ul class="nav navbar-nav navbar-right">
+                {% block extra_nav_buttons_right %} {% endblock %}
                 {% if user %}
                     <li><a><b>{{ user.username }}</b></a></li>
                     <li><a href="/logout/">Log out</a> </li>
@@ -42,6 +55,12 @@
 
     {% endblock %}
 </div>
+<script type="text/javascript">
+    document.getElementById("search_button").onclick = function (event) {
+        window.location.href = window.location.origin + "/task/" + document.getElementById("search_input").value
+
+    }
+</script>
 <script src="http://code.jquery.com/jquery-latest.js"/>
 <script src="js/bootstrap.js"/>
 </body>
