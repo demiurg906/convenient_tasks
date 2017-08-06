@@ -29,7 +29,9 @@ TABLE_OF_CONTEXT_URL = 'http://problems.ru/view_by_subject_new.php?parent=1302'
 # задача с TeX версткой
 # SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=102718'
 # задача с классами в ненужных тегах
-SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=61406'
+# SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=61406'
+# задача с исчезающими пробелами
+SINGLE_TASK_URL = 'http://problems.ru/view_problem_details_new.php?id=88161'
 
 GET_PARAMETER_TEMPLATE = '&start='
 
@@ -42,13 +44,13 @@ class ProblemsSpider(scrapy.Spider):
     def start_requests(self):
         start_url = getattr(self, 'start_url', None)
 
-        if start_url is None:
-            start_url = TABLE_OF_CONTEXT_URL + str(START_TASK_NUMBER)
-        yield scrapy.Request(url=start_url, callback=self.parse_table_of_context)
-
         # if start_url is None:
-        #     start_url = SINGLE_TASK_URL
-        # yield scrapy.Request(url=start_url, callback=self.parse_task)
+        #     start_url = TABLE_OF_CONTEXT_URL + str(START_TASK_NUMBER)
+        # yield scrapy.Request(url=start_url, callback=self.parse_table_of_context)
+
+        if start_url is None:
+            start_url = SINGLE_TASK_URL
+        yield scrapy.Request(url=start_url, callback=self.parse_task)
 
     def parse_table_of_context(self, response: HtmlResponse):
         ul = response.css('ul.componentboxlist')
@@ -180,7 +182,8 @@ class ProblemsSpider(scrapy.Spider):
                         (line.endswith('>') and not line.endswith('-->')):
                     continue
                 line = line.strip()
-                line = re.sub(r'(^>|!-- MATH|--|\n)', '', line, re.S).strip()
+                line = re.sub(r'(^>|!-- MATH|--)', '', line, re.S).strip()
+                line = line.replace('\n', ' ')
                 line = line.replace('\\begin{displaymath}', '$').replace('\\end{displaymath}', '$')
                 if line:
                     session_text.append(line)
