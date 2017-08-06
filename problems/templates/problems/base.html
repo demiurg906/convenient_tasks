@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <title>{% block title %}Convenient tasks{% endblock %}</title>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Convenient tasks</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/ask/">Tasks</a></li>
+                {% block extra_nav_buttons %} {% endblock %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user %}
+                    <li><a><b>{{ user.username }}</b></a></li>
+                    <li><a href="/logout/">Log out</a> </li>
+                {% else %}
+                    <li><a href="/signup/">Sign up</a></li>
+                    <li><a href="/login/">Log in</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block body %}
+
+    {% endblock %}
+</div>
+<script src="http://code.jquery.com/jquery-latest.js"/>
+<script src="js/bootstrap.js"/>
+</body>
