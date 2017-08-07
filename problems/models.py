@@ -16,12 +16,15 @@ class Grade(models.Model):
     """
     PATTERN = '{} класс'
 
-    grade = models.IntegerField(unique=True, verbose_name='Класс')
+    grade = models.SmallIntegerField(unique=True, verbose_name='Класс')
 
     tag = models.OneToOneField(Tag)
 
     def __str__(self):
         return str(self.PATTERN.format(self.grade))
+
+    class Meta:
+        ordering = ['grade']
 
 
 class AbstractSection(models.Model):
