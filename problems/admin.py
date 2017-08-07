@@ -19,9 +19,10 @@ class ImageInline(nested_inline.admin.NestedStackedInline):
     readonly_fields = ('image_tag',)
 
 
-class TaskSectionInline(nested_inline.admin.NestedTabularInline):
+class TaskSectionInline(nested_inline.admin.NestedStackedInline):
     model = TaskSection
     extra = 0
+    max_num = 4
     inlines = (ImageInline, )
     formfield_overrides = {
         models.TextField: {'widget': EditableTexTextarea},
