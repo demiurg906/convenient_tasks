@@ -51,6 +51,6 @@ class TaskAdmin(nested_inline.admin.NestedModelAdmin):
 
     fields = ('tags', 'section', 'subsection', 'grades', 'tex_used')
     inlines = (TaskSourceInline, TaskSectionInline)
-    save_on_top = True
+    # save_on_top = True  # useless with django-bootstrap
 
 admin.site.register([User, Section, Subsection, Grade])

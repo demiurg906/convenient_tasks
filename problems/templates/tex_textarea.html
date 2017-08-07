@@ -1,7 +1,4 @@
-<div style="float: left;
-            display: block;
-            width: 45%;
-            ">
+<div class="col-md-5">
     <p>
         {% if widget.value %}
             {{ widget.attrs.math | safe }}
@@ -9,10 +6,7 @@
     </p>
 </div>
 
-<div style="float: right;
-            display: block;
-            width: 45%;
-            ">
+<div class="col-md-5">
     <textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
 </div>
 
