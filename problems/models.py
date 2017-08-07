@@ -16,9 +16,7 @@ class Grade(models.Model):
     """
     PATTERN = '{} класс'
 
-    grade = models.IntegerField(
-        unique=True,
-    )
+    grade = models.IntegerField(unique=True, verbose_name='Класс')
 
     tag = models.OneToOneField(Tag)
 
@@ -31,7 +29,7 @@ class AbstractSection(models.Model):
     Модель раздела задач
     (как основного раздела (физика/математика)), так и побочных
     """
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')
     tag = models.OneToOneField(Tag)
 
     def __str__(self):
@@ -50,14 +48,14 @@ class Task(models.Model):
     """
     Модель для задачи
     """
-    tags = TagField()
+    tags = TagField(verbose_name='Теги')
 
-    section = models.ForeignKey(Section, related_name='section')  # основной раздел (физика/математика)
-    subsection = models.ForeignKey(Subsection, related_name='subsection')  # подраздел
+    section = models.ForeignKey(Section, related_name='section', verbose_name='Раздел')  # основной раздел (физика/математика)
+    subsection = models.ForeignKey(Subsection, related_name='subsection', verbose_name='Подраздел')  # подраздел
 
-    grades = models.ManyToManyField(Grade, blank=True)  # классы для данной задачи
+    grades = models.ManyToManyField(Grade, blank=True, verbose_name='Классы')  # классы для данной задачи
 
-    tex_used = models.BooleanField(default=False)
+    tex_used = models.BooleanField(default=False, verbose_name='TeX')
 
     def __str__(self):
         return f'Задача {str(self.pk)}'
@@ -104,12 +102,12 @@ class TaskSection(models.Model):
         ANSWER: 'Ответ'
     }
 
-    text = models.TextField(default='')
-    type = models.CharField(max_length=1, choices=TYPOS.items())
+    text = models.TextField(default='', verbose_name='Текст')
+    type = models.CharField(max_length=1, choices=TYPOS.items(), verbose_name='Тип')
     task = models.ForeignKey(Task)
 
     def __str__(self):
-        return f'{self.TYPOS[self.type]} for {self.task}'
+        return f'{self.TYPOS[self.type]} для "{self.task}"'
 
     def is_condition(self):
         return self.type == self.CONDITION
@@ -132,7 +130,7 @@ class Image(models.Model):
     Модель для иллюстрации к части задачи
     """
     image = models.ImageField(null=True)  # сама картинка
-    number = models.IntegerField()  # ее номер в задаче
+    number = models.IntegerField(verbose_name='Номер')  # ее номер в задаче
     section = models.ForeignKey(TaskSection, on_delete=models.CASCADE)  # ссылка на задачу
 
     def image_tag(self):
@@ -145,14 +143,14 @@ class Image(models.Model):
     image_tag.short_description = 'Image'
 
     def __str__(self):
-        return f'image {self.number} of "{self.section}"'
+        return f'Рис. {self.number} of "{self.section}"'
 
 
 class TaskSource(models.Model):
-    name = models.CharField(max_length=100, null=True)  # название источника
+    name = models.CharField(max_length=100, null=True, verbose_name='Имя')  # название источника
     url = models.URLField(null=True)  # ссылка на источник
-    author = models.ForeignKey(settings.AUTH_USER_MODEL)  # ссылка на автора
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор')  # ссылка на автора
     source = models.OneToOneField(Task)  # ссылка на задачу
 
     def __str__(self):
-        return f'source for {self.source}'
+        return f'Источник для "{self.source}"'
