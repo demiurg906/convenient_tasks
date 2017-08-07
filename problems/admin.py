@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.db import models
 
 from problems.forms import EditableTexTextarea
-from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskTip, TaskCondition, \
-    TaskAnswer, TaskSolution, TaskSection
+from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskSection
 
 
 class TaskSourceInline(nested_inline.admin.NestedStackedInline):
@@ -22,26 +21,11 @@ class ImageInline(nested_inline.admin.NestedStackedInline):
 
 class TaskSectionInline(nested_inline.admin.NestedTabularInline):
     model = TaskSection
+    extra = 0
     inlines = (ImageInline, )
     formfield_overrides = {
         models.TextField: {'widget': EditableTexTextarea},
     }
-
-
-class TaskConditionInline(TaskSectionInline):
-    model = TaskCondition
-
-
-class TaskTipInline(TaskSectionInline):
-    model = TaskTip
-
-
-class TaskSolutionInline(TaskSectionInline):
-    model = TaskSolution
-
-
-class TaskAnswerInline(TaskSectionInline):
-    model = TaskAnswer
 
 
 def custom_titled_filter(title):
@@ -65,7 +49,7 @@ class TaskAdmin(nested_inline.admin.NestedModelAdmin):
                    )
 
     fields = ('tags', 'section', 'subsection', 'grades', 'tex_used')
-    inlines = (TaskSourceInline, TaskConditionInline, TaskTipInline, TaskSolutionInline, TaskAnswerInline)
+    inlines = (TaskSourceInline, TaskSectionInline)
     save_on_top = True
 
 admin.site.register([User, Section, Subsection, Grade])

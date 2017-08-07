@@ -69,19 +69,19 @@ class Task(models.Model):
     task_name.admin_order_field = 'pk'
 
     def has_tip(self):
-        return self.tip is not None
+        return any(section.is_tip for section in self.tasksection_set.all())
 
     has_tip.boolean = True
     has_tip.short_description = 'Tip'
 
     def has_solution(self):
-        return self.solution is not None
+        return any(section.is_solution for section in self.tasksection_set.all())
 
     has_solution.boolean = True
     has_solution.short_description = 'Solution'
 
     def has_answer(self):
-        return self.answer is not None
+        return any(section.is_answer for section in self.tasksection_set.all())
 
     has_answer.boolean = True
     has_answer.short_description = 'Answer'
@@ -92,58 +92,39 @@ class TaskSection(models.Model):
     Модель для части задачи -- условия, подсказки, решения или ответа
     содержит в себе текст и 0 или больше картинок
     """
+    CONDITION = '1'
+    TIP = '2'
+    SOLUTION = '3'
+    ANSWER = '4'
+
+    TYPOS = {
+        CONDITION: 'Условие',
+        TIP: 'Подсказка',
+        SOLUTION: 'Решение',
+        ANSWER: 'Ответ'
+    }
+
     text = models.TextField(default='')
+    type = models.CharField(max_length=1, choices=TYPOS.items())
+    task = models.ForeignKey(Task)
 
     def __str__(self):
-        try:
-            if self.taskcondition is not None:
-                return str(self.taskcondition)
-        except self.DoesNotExist as e:
-            pass
-        try:
-            if self.tasktip is not None:
-                return str(self.tasktip)
-        except self.DoesNotExist as e:
-            pass
-        try:
-            if self.tasksolution is not None:
-                return str(self.tasksolution)
-        except self.DoesNotExist as e:
-            pass
-        try:
-            if self.taskanswer is not None:
-                return str(self.taskanswer)
-        except self.DoesNotExist as e:
-            pass
-        return f'Task section {self.pk}'
+        return f'{self.TYPOS[self.type]} for {self.task}'
 
+    def is_condition(self):
+        return self.type == self.CONDITION
 
-class TaskCondition(TaskSection):
-    condition = models.OneToOneField(Task, related_name='condition')  # условие
+    def is_tip(self):
+        return self.type == self.TIP
 
-    def __str__(self):
-        return f'condition for {self.condition}'
+    def is_solution(self):
+        return self.type == self.SOLUTION
 
+    def is_answer(self):
+        return self.type == self.ANSWER
 
-class TaskTip(TaskSection):
-    tip = models.OneToOneField(Task, related_name='tip')  # подсказка
-
-    def __str__(self):
-        return f'tip for {self.tip}'
-
-
-class TaskSolution(TaskSection):
-    solution = models.OneToOneField(Task, related_name='solution')  # решение
-
-    def __str__(self):
-        return f'solution for {self.solution}'
-
-
-class TaskAnswer(TaskSection):
-    answer = models.OneToOneField(Task, related_name='answer')  # ответ
-
-    def __str__(self):
-        return f'answer for {self.answer}'
+    def get_name(self):
+        return self.TYPOS[self.type]
 
 
 class Image(models.Model):
@@ -155,7 +136,11 @@ class Image(models.Model):
     section = models.ForeignKey(TaskSection, on_delete=models.CASCADE)  # ссылка на задачу
 
     def image_tag(self):
-        return mark_safe(f'<img src="{self.image.url}" width="{self.image.width}" height="{self.image.height}" />')
+        return mark_safe(f'<img {self.tag_params()} '
+                         f'alt="рис. {self.number}"/>')
+
+    def tag_params(self):
+        return f'src={self.image.url} width={self.image.width} height={self.image.height}'
 
     image_tag.short_description = 'Image'
 
@@ -166,8 +151,8 @@ class Image(models.Model):
 class TaskSource(models.Model):
     name = models.CharField(max_length=100, null=True)  # название источника
     url = models.URLField(null=True)  # ссылка на источник
-    author = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)  # ссылка на автора
-    source = models.OneToOneField(Task)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)  # ссылка на автора
+    source = models.OneToOneField(Task)  # ссылка на задачу
 
     def __str__(self):
         return f'source for {self.source}'

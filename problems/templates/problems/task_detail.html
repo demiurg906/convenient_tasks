@@ -12,29 +12,18 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <h3>Условие</h3>
-        <p>{{ task.condition.text|math|safe }}</p>
-    </div>
-
-    {% if task.has_tip %}
-    <div class="row">
-        <h3>Подсказка</h3>
-        <p>{{ task.tip.text|math }}</p>
-    </div>
-    {% endif %}
-
-    {% if task.has_solution %}
+    {% for section in task.tasksection_set.all %}
         <div class="row">
-            <h3>Решение</h3>
-            <p>{{ task.solution.text|math }}</p>
+            <div class="col-md-10">
+                <h3>{{ section.get_name }}</h3>
+                <p>{{ section.text|math }}</p>
+                {% for image in section.image_set.all %}
+                    <figure>
+                        <img class="img-responsive" {{ image.tag_params }}/>
+                        <figcaption>Рис. {{ image.number }}</figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
         </div>
-    {% endif %}
-
-    {% if task.has_answer %}
-        <div class="row">
-            <h3>Ответ</h3>
-            <p>{{ task.answer.text|math }}</p>
-        </div>
-    {% endif %}
+    {% endfor %}
 {% endblock %}

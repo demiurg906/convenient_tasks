@@ -9,9 +9,11 @@ import os
 from django.db import IntegrityError
 from tagging.models import Tag
 
-from problems.models import Section, Grade, Subsection
+from problems.models import Section, Grade, Subsection, User
 from problems_crawlers.items import GradeItem, SectionItem, ImageItem, TaskItem, \
-    ParseResultItem, SubsectionItem, TASK_SECTIONS
+    ParseResultItem, SubsectionItem, TASK_SECTIONS, TaskSectionItem
+
+admin = User.objects.get(username='admin')
 
 
 class CheckConditionPipeline:
@@ -43,11 +45,13 @@ class ProblemsCrawlersPipeline(object):
 
         source = item['source']
         source['source'] = task
+        source['author'] = admin
         source = source.save()
         for field, (text, pictures) in item['task'].items():
-            task_section = TASK_SECTIONS[field]()
+            task_section = TaskSectionItem()
             task_section['text'] = text
-            task_section[field] = task
+            task_section['type'] = TASK_SECTIONS[field]
+            task_section['task'] = task
             task_section = task_section.save()
             for n, image_url in enumerate(pictures):
                 image = ImageItem()
