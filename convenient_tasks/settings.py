@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tagging',
     'nested_inline',
+    'channels',
     'problems',
 ]
 
