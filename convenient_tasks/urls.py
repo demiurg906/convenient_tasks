@@ -18,9 +18,9 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from problems.views import TaskDetailView
+from problems.views import TaskDetailView, task_search
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^task/(?P<pk>\d+)/$', TaskDetailView.as_view())
+    url(r'^task/(?P<pk>\d+)/$', task_search)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

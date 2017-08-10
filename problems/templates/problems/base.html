@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    {% block css %}
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {% endblock %}
     <title>{% block title %}Convenient tasks{% endblock %}</title>
 </head>
 <body>
@@ -51,16 +54,22 @@
 </nav>
 
 <div class="container">
-    {% block body %}
-
-    {% endblock %}
+    <div class="row">
+        <div class="col-md-2 col-lg-2">{% block left_panel %}{% endblock %}</div>
+        <div class="col-md-2 col-lg-2">{% block center_panel %}{% endblock %}</div>
+        <div class="col-md-8 col-lg-8">{% block details_panel %}{% endblock %}</div>
+    </div>
 </div>
-<script type="text/javascript">
-    document.getElementById("search_button").onclick = function (event) {
-        window.location.href = window.location.origin + "/task/" + document.getElementById("search_input").value
 
-    }
-</script>
-<script src="http://code.jquery.com/jquery-latest.js"/>
-<script src="js/bootstrap.js"/>
+{% block scripts %}
+    <script type="text/javascript">
+        document.getElementById("search_button").onclick = function (event) {
+            window.location.href = window.location.origin + "/task/" + document.getElementById("search_input").value
+
+        }
+    </script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src={% static "js/bootstrap.js" %}></script>
+{% endblock %}
 </body>
