@@ -1,43 +1,5 @@
-{% extends 'problems/base.html' %}
-
-{% load problems_extras %}
-
-{% block title %}
-    {{ block.super }} Task № {{ task.pk }}
-{% endblock %}
-
-{% block extra_nav_buttons_left %}
-    <li><a href="/task/{{ task.pk|add:-1 }}">Prev</a></li>
-    <li><a href="/task/{{ task.pk|add:1 }}">Next</a></li>
-{% endblock %}
-
-{% block left_panel %}
-    <div class="input-group">
-        <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ sections.first }}<span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                {% for section in sections %}
-                    <li><a href="#">{{ section }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    <div class="input-group">
-        <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ subsections.first }}<span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                {% for section in subsections %}
-                    <li><a href="#">{{ section }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    <div id="grade_slider"></div>
-{% endblock %}
-
-{% block details_panel %}
+<div id="task_detail">
+    {% load problems_extras %}
     {% for section in task.tasksection_set.all %}
         <h3>{{ section.get_name }}</h3>
         <p>{{ section.text|math }}</p>
@@ -48,44 +10,4 @@
             </figure>
         {% endfor %}
     {% endfor %}
-{% endblock %}
-
-{% block css %}
-    {{ block.super }}
-    <style type="text/css">
-        #grade_slider label {
-            position: absolute;
-            width: 20px;
-            margin-top: 20px;
-            margin-left: -10px;
-            text-align: center;
-        }
-    </style>
-{% endblock %}
-
-{% block scripts %}
-    {{ block.super }}
-    <script type="text/javascript">
-        {# Слайдер для выбора класса #}
-        $( function() {
-            $( "#grade_slider" ).slider({
-                values: [7, 9],
-                min: 1,
-                max: 11,
-                step: 1,
-                range: true,
-{#                slide: function( event, ui ) {#}
-{#                    $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );#}
-{#                }#}
-            }).each(function() {
-                var opt = $(this).data().uiSlider.options;
-                var vals = opt.max - opt.min;
-                for (var i = 0; i <= vals; i++) {
-                    var el = $('<label>' + (i + opt.min) + '</label>').css('left', (i/vals*100) + '%');
-                    $("#grade_slider").append(el);
-                }
-            });
-        } );
-    </script>
-{% endblock %}
-
+</div>

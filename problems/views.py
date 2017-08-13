@@ -1,20 +1,20 @@
 from django.shortcuts import render
-from django.template.loader import render_to_string
-from django.views.generic import DetailView
-from django import views
 
 from problems.models import Task, Section, Subsection
 
 
-def task_search(request, pk):
-    context = {
+def task_detail(request, pk):
+    return render(request, 'problems/task_detail.html', {
         'task': Task.objects.get(pk=pk),
+    })
+
+
+def task_search(request):
+    return render(request, 'problems/tasks_search.html', {
+        # TODO: fix
+        'task': Task.objects.get(pk=1),
         'sections': Section.objects.all(),
         'subsections': Subsection.objects.all()
-    }
-    html = render_to_string('problems/task_detail.html', context)
-    return render(request, 'problems/task_detail.html', context)
+    })
 
-
-class TaskDetailView(DetailView):
-    model = Task
+# render(1, 'problems/task_button.html', {'task': Task.objects.get(pk=1)})

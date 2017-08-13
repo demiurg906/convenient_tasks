@@ -135,3 +135,10 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgiref.inmemory.ChannelLayer',
+        'ROUTING': 'convenient_tasks.routing.channel_routing',
+    },
+}
