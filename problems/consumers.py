@@ -29,7 +29,7 @@ def generate_list_of_tasks(request):
         max_pk = 0
     return {
         'message_type': TASKS_LIST,
-        'tasks': [render_to_string('problems/task_button.html', {
+        'tasks': [render_to_string('problems/elements/task_button.html', {
             'task': task,
             'tags': Tag.objects.get_for_object(task)
         }) for task in tasks],
@@ -42,9 +42,9 @@ def generate_task_template(request):
     pk = int(request['pk'])
     if pk > 0:
         task = Task.objects.get(pk=request['pk'])
-        task_html = render_to_string('problems/task_detail.html', {'task': task})
+        task_html = render_to_string('problems/elements/task_detail.html', {'task': task})
     else:
-        task_html = render_to_string('problems/no_task_placeholder.html')
+        task_html = render_to_string('problems/elements/no_task_placeholder.html')
     return {
         'message_type': GET_TASK,
         'task': task_html
