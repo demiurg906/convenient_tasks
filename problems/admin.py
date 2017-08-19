@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db import models
 
 from problems.forms import EditableTexTextarea
-from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskSection
+from problems.models import Task, User, TaskSource, Section, Subsection, Image, Grade, TaskSection, TaskPool
 
 
 class TaskSourceInline(nested_inline.admin.NestedStackedInline):
@@ -53,4 +53,4 @@ class TaskAdmin(nested_inline.admin.NestedModelAdmin):
     inlines = (TaskSourceInline, TaskSectionInline)
     # save_on_top = True  # useless with django-bootstrap
 
-admin.site.register([User, Section, Subsection, Grade])
+admin.site.register([User, Section, Subsection, Grade, TaskPool])

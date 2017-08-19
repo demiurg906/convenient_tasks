@@ -7,7 +7,14 @@ from tagging.models import Tag
 
 
 class User(AbstractUser):
-    pass
+    def save(self, *args, **kwargs):
+        super(User, self).save(*args, **kwargs)
+        if not self.taskpool_set.filter(name='Избранное').exists():
+            favorites = TaskPool.objects.create(
+                name='Избранное',
+                user=self
+            )
+
 
 
 class GradeManager(models.Manager):
@@ -166,5 +173,10 @@ class TaskSource(models.Model):
 
 
 class TaskPool(models.Model):
+    name = models.CharField(max_length=256)
+    description = models.TextField(default='')
     tasks = models.ManyToManyField(Task)
     user = models.ForeignKey(User)
+
+    def __str__(self):
+        return f'"{self.name}" of user {self.user}'
