@@ -35,7 +35,7 @@ class ProblemsCrawlersPipeline(object):
             image_dict[image['url']] = os.path.normpath(image['path'])
 
         section = self.save_unique_item(Section, SectionItem, 'name', item['section'], True)
-        subsection = self.save_unique_item(Subsection, SubsectionItem, 'name', item['subsection'], True)
+        subsection = self.save_unique_item(Subsection, SubsectionItem, 'name', item['subsection'], True, fields={'main_section': section})
 
         task = TaskItem()
         task['section'] = section
@@ -83,13 +83,18 @@ class ProblemsCrawlersPipeline(object):
             'task': task.pk
         }
 
-    def save_unique_item(self, model_class, item_class, field, value, tag=False, tag_pattern='{}'):
+    def save_unique_item(self, model_class, item_class, field, value, tag=False, tag_pattern='{}', fields=None):
         item = item_class()
         item[field] = value
         if tag:
             tag, _ = Tag.objects.get_or_create(name=tag_pattern.format(value))
             item['tag'] = tag
+        if fields:
+            for name, f_value in fields.items():
+                item[name] = f_value
         try:
             return item.save()
         except IntegrityError as e:
             return model_class.objects.get(**{field: value})
+        except Exception as e:
+            print()
