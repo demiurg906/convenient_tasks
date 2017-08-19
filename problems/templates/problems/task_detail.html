@@ -10,4 +10,17 @@
             </figure>
         {% endfor %}
     {% endfor %}
+
+    <h4><b>Раздел</b></h4>
+    <p>{{ task.section }}</p>
+
+    <h4><b>Подраздел</b></h4>
+    <p>{{ task.subsection }}</p>
+
+    <h4><b>Классы</b></h4>
+    <ul>
+        {% for grade in task.grades.all %}
+            <li>{{ grade }}</li>
+        {% endfor %}
+    </ul>
 </div>

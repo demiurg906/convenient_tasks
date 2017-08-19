@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block left_panel %}
-    <div class="input-group">
+    <div id='sections' class="input-group">
         <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ sections.first }}<span class="caret"></span></button>
             <ul class="dropdown-menu">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="input-group">
+    <div id='subsections' class="input-group">
         <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ subsections.first }}<span class="caret"></span></button>
             <ul class="dropdown-menu">
@@ -43,7 +43,7 @@
 {% endblock %}
 
 {% block details_panel %}
-    {% include 'problems/task_detail.html' %}
+    <div id="task_detail"></div>
 {% endblock %}
 
 {% block css %}
@@ -67,27 +67,5 @@
     {{ block.super }}
     {% load static %}
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-    <script type="text/javascript">
-{#         Слайдер для выбора класса #}
-        $( function() {
-            $( "#grade_slider" ).slider({
-                values: [7, 9],
-                min: 1,
-                max: 11,
-                step: 1,
-                range: true,
-                                slide: function( event, ui ) {
-                                    $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-                                }
-            }).each(function() {
-                var opt = $(this).data().uiSlider.options;
-                var vals = opt.max - opt.min;
-                for (var i = 0; i <= vals; i++) {
-                    var el = $('<label>' + (i + opt.min) + '</label>').css('left', (i/vals*100) + '%');
-                    $("#grade_slider").append(el);
-                }
-            });
-        } );
-    </script>
 {% endblock %}
 

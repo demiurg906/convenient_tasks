@@ -10,6 +10,11 @@ class User(AbstractUser):
     pass
 
 
+class GradeManager(models.Manager):
+    def range(self, min_grade=1, max_grade=11):
+        return self.filter(grade__gte=min_grade).filter(grade__lte=max_grade).all()
+
+
 class Grade(models.Model):
     """
     Модель для класса
@@ -17,8 +22,9 @@ class Grade(models.Model):
     PATTERN = '{} класс'
 
     grade = models.SmallIntegerField(unique=True, verbose_name='Класс')
-
     tag = models.OneToOneField(Tag)
+
+    objects = GradeManager()
 
     def __str__(self):
         return str(self.PATTERN.format(self.grade))
