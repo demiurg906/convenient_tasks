@@ -44,7 +44,7 @@ class Section(AbstractSection):
 
 
 class Subsection(AbstractSection):
-    pass
+    main_section = models.ForeignKey(Section)
 
 
 class Task(models.Model):
@@ -157,3 +157,8 @@ class TaskSource(models.Model):
 
     def __str__(self):
         return f'Источник для "{self.source}"'
+
+
+class TaskPool(models.Model):
+    tasks = models.ManyToManyField(Task)
+    user = models.ForeignKey(User)
