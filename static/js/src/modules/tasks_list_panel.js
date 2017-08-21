@@ -16,7 +16,7 @@ function send_request_for_search_list_of_tasks(socket, action) {
     send(socket, {
         message_type: TASKS_LIST,
         n: N,
-        max_pk: $('#tasks_list').max_pk,
+        max_pk: $('#tasks_list').attr('max_pk'),
         section: section_button.text(),
         subsection: subsection_button.text(),
         min_grade: grades[0],
@@ -51,7 +51,7 @@ export function receive_task_list_message(socket, message) {
     for (let task of message.tasks) {
         tasks_list.append(task);
     }
-    tasks_list.max_pk = message.max_pk;
+    tasks_list.attr('max_pk', message.max_pk);
     if (message.tasks.length < N) {
         disable_more_tasks_button()
     }
@@ -73,8 +73,15 @@ export function receive_get_task_message(message) {
 
 export function get_new_list(socket) {
     let tasks_list = $("#tasks_list");
-    tasks_list.max_pk=0;
+    tasks_list.attr('max_pk', 0);
+    // tasks_list.max_pk = 0;
     tasks_list.empty();
     enable_more_tasks_button();
     send_request_for_search_list_of_tasks(socket, NEW_LIST);
+}
+
+export function initialize_tasks_list(socket) {
+    $('#give_me_more').click(function (event) {
+        send_request_for_search_list_of_tasks(socket, UPDATE_LIST);
+    });
 }

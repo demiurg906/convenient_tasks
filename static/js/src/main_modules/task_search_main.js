@@ -1,7 +1,10 @@
 //TODO: добавить проверку версии браузера
 
 import {initialize_slider, set_listeners_for_sections_dropdown} from "../modules/left_search_panel";
-import {get_new_list, receive_get_task_message, receive_task_list_message} from "../modules/tasks_list_panel"
+import {
+    get_new_list, initialize_tasks_list, receive_get_task_message,
+    receive_task_list_message
+} from "../modules/tasks_list_panel"
 
 export const TASKS_LIST = 'tasks_list';
 export const GET_TASK = 'get_task';
@@ -9,7 +12,7 @@ export const GET_TASK = 'get_task';
 
 $(document).ready(function(){
     let socket;
-    function connect() {
+    function connect(first_time) {
         socket = new WebSocket('ws://' + window.location.host + '/problems/tasks/');
         // Type of information received by websocket
         // socket.binaryType = 'arraybuffer';
@@ -17,20 +20,23 @@ $(document).ready(function(){
         socket.onopen = function (event) {
             set_listeners_for_sections_dropdown(socket, 'sections');
             set_listeners_for_sections_dropdown(socket, 'subsections');
-            get_new_list(socket);
+            if (first_time) {
+                get_new_list(socket);
+            }
         };
 
         socket.onmessage = (e) => receive_message(e.data);
 
         socket.onclose = () => {
             setTimeout(() => {
-                connect()
+                connect(false)
             }, 5000)
         };
     }
 
-    connect();
+    connect(true);
     initialize_slider(socket);
+    initialize_tasks_list(socket);
 
     function receive_message(message) {
         let data = JSON.parse(message);

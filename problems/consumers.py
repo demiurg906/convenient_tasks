@@ -18,7 +18,7 @@ def generate_list_of_tasks(request):
         .filter(subsection__name=request['subsection'])\
         .filter(grades__in=Grade.objects.range(request['min_grade'], request['max_grade']))\
         .distinct()
-    max_pk = request.get('max_pk', 0)
+    max_pk = int(request.get('max_pk', 0))
     if max_pk > 0:
         query_set = query_set.filter(pk__gt=max_pk)
     tasks_iter = query_set.iterator()
