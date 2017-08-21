@@ -1,26 +1,44 @@
 <div id="task_detail">
-    {% load problems_extras %}
-    {% for section in task.tasksection_set.all %}
-        <h3>{{ section.get_name }}</h3>
-        <p>{{ section.text|math }}</p>
-        {% for image in section.image_set.all %}
-            <figure>
-                <img class="img-responsive" {{ image.tag_params }}/>
-                <figcaption>Рис. {{ image.number }}</figcaption>
-            </figure>
+<div class="row">
+    <div class="col-md-11 col-lg-11">
+        {% load problems_extras %}
+        {% for section in task.tasksection_set.all %}
+            <h3>{{ section.get_name }}</h3>
+            <p>{{ section.text|math }}</p>
+            {% for image in section.image_set.all %}
+                <figure>
+                    <img class="img-responsive" {{ image.tag_params }}/>
+                    <figcaption>Рис. {{ image.number }}</figcaption>
+                </figure>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
 
-    <h4><b>Раздел</b></h4>
-    <p>{{ task.section }}</p>
+        <h4><b>Раздел</b></h4>
+        <p>{{ task.section }}</p>
 
-    <h4><b>Подраздел</b></h4>
-    <p>{{ task.subsection }}</p>
+        <h4><b>Подраздел</b></h4>
+        <p>{{ task.subsection }}</p>
 
-    <h4><b>Классы</b></h4>
-    <ul>
-        {% for grade in task.grades.all %}
-            <li>{{ grade }}</li>
-        {% endfor %}
-    </ul>
+        <h4><b>Классы</b></h4>
+        <ul>
+            {% for grade in task.grades.all %}
+                <li>{{ grade }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-1 col-lg-1">
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Добавить в набор<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% for pool in user.taskpool_set.all %}
+                        <li><a class="pool-button" href="#">{{ pool.name }}</a></li>
+                    {% endfor %}
+                    <li class="divider"></li>
+                    <li><a class="new-pool-button" href="#">Новый набор</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

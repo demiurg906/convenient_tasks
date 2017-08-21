@@ -1,5 +1,6 @@
 import json
 
+from channels.auth import channel_session_user_from_http, channel_session_user
 from channels.message import Message
 from django.template.loader import render_to_string
 
@@ -38,11 +39,11 @@ def generate_list_of_tasks(request):
     }
 
 
-def generate_task_template(request):
+def generate_task_template(request, user):
     pk = int(request['pk'])
     if pk > 0:
         task = Task.objects.get(pk=request['pk'])
-        task_html = render_to_string('problems/elements/task_detail.html', {'task': task})
+        task_html = render_to_string('problems/elements/task_detail.html', {'task': task, 'user': user})
     else:
         task_html = render_to_string('problems/elements/no_task_placeholder.html')
     return {
@@ -55,12 +56,18 @@ def send_reply(message: Message, data):
     message.reply_channel.send({'text': json.dumps(data)})
 
 
+@channel_session_user_from_http
+def ws_connect(message):
+    message.reply_channel.send({"accept": True})
+
+
+@channel_session_user
 def ws_message(message: Message):
     request = json.loads(message.content['text'])
     if request['message_type'] == TASKS_LIST:
         response = generate_list_of_tasks(request)
     elif request['message_type'] == GET_TASK:
-        response = generate_task_template(request)
+        response = generate_task_template(request, message.user)
     else:
         raise ValueError('неизвестный тип запроса')
     send_reply(message, response)
