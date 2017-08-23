@@ -59,6 +59,7 @@ def generate_task_template(request, user):
 
 def add_task_to_pool(request, user: User):
     pool_html = ''
+    pool_id = ''
     try:
         pool_pk = request['pool_pk']
         task_pk = request['task_pk']
@@ -75,6 +76,7 @@ def add_task_to_pool(request, user: User):
             'task': task,
             'pool': pool
         })
+        pool_id = f'pool-{pool.pk}'
         status = 'OK'
     except Exception as e:
         logger.exception(e)
@@ -83,7 +85,7 @@ def add_task_to_pool(request, user: User):
         'message_type': ADD_TO_POOL,
         'status': status,
         'pool_html': pool_html,
-        'pool_id': f'pool-{pool.pk}'
+        'pool_id': pool_id
     }
 
 

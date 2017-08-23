@@ -29,7 +29,7 @@
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
-                    <input id="search_input" type="number" class="form-control" placeholder="Go to task"
+                    <input id="search-input" type="number" class="form-control" placeholder="Go to task"
                            {% if task %}
                                 value="{{ task.pk }}"
                            {% else %}
@@ -37,7 +37,7 @@
                            {% endif %}
                     >
                 </div>
-                <button id="search_button" type="button" class="btn btn-default">Искать</button>
+                <button id="search-button" type="button" class="btn btn-default">Искать</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% block extra_nav_buttons_right %} {% endblock %}
@@ -62,14 +62,9 @@
 </div>
 
 {% block scripts %}
-    <script type="text/javascript">
-        document.getElementById("search_button").onclick = function (event) {
-            window.location.href = window.location.origin + "/task/" + document.getElementById("search_input").value
-
-        }
-    </script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src={% static "js/lib/bootstrap.js" %}></script>
+    <script src="{% static 'js/base_main.bundle.js' %}"></script>
 {% endblock %}
 </body>

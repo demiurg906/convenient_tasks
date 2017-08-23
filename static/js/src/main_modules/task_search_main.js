@@ -10,8 +10,8 @@ import {socket, connect, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST} from "../m
 
 $(document).ready(function() {
     connect('/problems/tasks/', function (first_time) {
-        set_listeners_for_sections_dropdown(socket, 'sections');
-        set_listeners_for_sections_dropdown(socket, 'subsections');
+        set_listeners_for_sections_dropdown('sections');
+        set_listeners_for_sections_dropdown('subsections');
         if (first_time) {
             get_new_list(socket);
         }

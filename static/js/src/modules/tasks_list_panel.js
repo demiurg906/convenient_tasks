@@ -1,22 +1,22 @@
-import {socket, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST} from "../modules/variables_and_constants";
+import {socket, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST} from '../modules/variables_and_constants';
 
 const NEW_LIST = 'new_list';
 const UPDATE_LIST = 'update_list';
 
 const N = 10;
 
-import {section_button, subsection_button} from "./left_search_panel"
+import {section_button, subsection_button} from './left_search_panel'
 
 function enable_more_tasks_button() {
     $('#give_me_more').prop('disabled', false);
 }
 
 function send_request_for_search_list_of_tasks(action) {
-    let grades = $('#grade_slider').data().uiSlider.options.values;
+    let grades = $('#grade-slider').data().uiSlider.options.values;
     send({
         message_type: TASKS_LIST,
         n: N,
-        max_pk: $('#tasks_list').attr('max_pk'),
+        max_pk: $('#tasks-list').attr('max_pk'),
         section: section_button.text(),
         subsection: subsection_button.text(),
         min_grade: grades[0],
@@ -30,7 +30,7 @@ function send(data) {
 }
 
 function update_listeners() {
-    $('.task_button').click(function (event) {
+    $('.task-button').click(function () {
         get_task_description(this.getAttribute('pk'));
     });
 }
@@ -43,11 +43,11 @@ function get_task_description(pk) {
 }
 
 function disable_more_tasks_button() {
-    $('#give_me_more').prop('disabled', true);
+    $('#give-me-more').prop('disabled', true);
 }
 
 export function receive_task_list_message(message) {
-    let tasks_list = $('#tasks_list');
+    let tasks_list = $('#tasks-list');
     for (let task of message.tasks) {
         tasks_list.append(task);
     }
@@ -57,7 +57,7 @@ export function receive_task_list_message(message) {
     }
     update_listeners();
     if (message.action === NEW_LIST) {
-        let button = $('#tasks_list button:first-child');
+        let button = $('#tasks-list button:first-child');
         if (button.length > 0) {
             button.click()
         } else {
@@ -68,7 +68,7 @@ export function receive_task_list_message(message) {
 }
 
 export function receive_get_task_message(message) {
-    $('#task_detail').replaceWith(message.task);
+    $('#task-detail').replaceWith(message.task);
     update_pool_buttons_listeners();
     $('#new-pool-button').keyup(function(e){
         if(e.keyCode === 13) {
@@ -77,7 +77,7 @@ export function receive_get_task_message(message) {
                 send({
                     message_type: NEW_POOL,
                     pool_name: pool_name,
-                    task_pk: $('#task_detail').attr('task_pk')
+                    task_pk: $('#task-detail').attr('task_pk')
                 })
             }
             $(this).val('');
@@ -104,14 +104,14 @@ function update_pool_buttons_listeners() {
             send({
                 message_type: ADD_TO_POOL,
                 pool_pk: $(this).attr('pool_pk'),
-                task_pk: $('#task_detail').attr('task_pk')
+                task_pk: $('#task-detail').attr('task_pk')
             })
         });
     });
 }
 
 export function get_new_list() {
-    let tasks_list = $("#tasks_list");
+    let tasks_list = $('#tasks-list');
     tasks_list.attr('max_pk', 0);
     tasks_list.empty();
     enable_more_tasks_button();
@@ -119,7 +119,7 @@ export function get_new_list() {
 }
 
 export function initialize_tasks_list() {
-    $('#give_me_more').click(function (event) {
+    $('#give-me-more').click(function (event) {
         send_request_for_search_list_of_tasks(UPDATE_LIST);
     });
 }
