@@ -1,4 +1,4 @@
-<div id="task_detail">
+<div id="task_detail" task_pk="{{ task.pk }}">
 <div class="row">
     <div class="col-md-11 col-lg-11">
         {% load problems_extras %}
@@ -30,12 +30,14 @@
         <div class="input-group">
             <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Добавить в набор<span class="caret"></span></button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" id="pool-list">
                     {% for pool in user.taskpool_set.all %}
-                        <li><a class="pool-button" href="#">{{ pool.name }}</a></li>
+                        {% include 'problems/elements/pool_list_element.html' %}
                     {% endfor %}
-                    <li class="divider"></li>
-                    <li><a class="new-pool-button" href="#">Новый набор</a></li>
+                    <li class="divider" id="pool-divider"></li>
+                    <li>
+                        <input class="form-control" id="new-pool-button" placeholder="Новый набор">
+                    </li>
                 </ul>
             </div>
         </div>
