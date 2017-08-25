@@ -1,14 +1,5 @@
 {% extends 'problems/base.html' %}
 
-{% block title %}
-    {{ block.super }} Task № {{ task.pk }}
-{% endblock %}
-
-{% block extra_nav_buttons_left %}
-    <li><a href="/task/{{ task.pk|add:-1 }}">Prev</a></li>
-    <li><a href="/task/{{ task.pk|add:1 }}">Next</a></li>
-{% endblock %}
-
 {% block left_panel %}
     <div id='sections' class="input-group">
         <div class="input-group-btn">
@@ -36,31 +27,17 @@
 {% endblock %}
 
 {% block center_panel %}
-    <div id="tasks-list-group">
-        <div id="tasks-list" class="btn-group-vertical"></div>
-        <button id="give-me-more" type="button" class="btn">Больше задач</button>
-    </div>
+    {% include 'problems/elements/tasks_list_panel.html' %}
 {% endblock %}
 
 {% block details_panel %}
-    <div id="task-detail"></div>
+    {% include 'problems/elements/task_detail_default_panel.html' %}
 {% endblock %}
 
 {% block css %}
     {{ block.super }}
-    <style type="text/css">
-        #grade_slider label {
-            position: absolute;
-            width: 20px;
-            margin-top: 20px;
-            margin-left: -10px;
-            text-align: center;
-        }
-        #tasks-list-group {
-            overflow: auto;
-            max-height: 700px;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/grade_slider.css' %}">
 {% endblock %}
 
 {% block scripts %}
