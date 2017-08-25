@@ -119,7 +119,7 @@ def ws_connect(message):
 
 
 @channel_session_user
-def ws_message(message: Message):
+def ws_search_message(message: Message):
     request = json.loads(message.content['text'])
     message_type = request['message_type']
     if message_type in handlers:
@@ -128,3 +128,7 @@ def ws_message(message: Message):
     else:
         logger.error(f'Неизвестный тип запроса')
 
+
+@channel_session_user
+def ws_pools_message(message: Message):
+    pass

@@ -1,3 +1,4 @@
+from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render
 
 from problems.models import Task, Section, Subsection, User
@@ -14,11 +15,18 @@ def task_detail(request, pk):
 
 
 def task_search(request):
+    if not request.user.is_authenticated():
+        return redirect_to_login('/tasks')
     return render(request, 'problems/tasks_search.html', {
-        # TODO: fix
-        'task': Task.objects.get(pk=1),
         'sections': Section.objects.all(),
         'subsections': Subsection.objects.all()
     })
 
-# render(1, 'problems/task_button.html', {'task': Task.objects.get(pk=1)})
+
+def pools(request):
+    if not request.user.is_authenticated():
+        return redirect_to_login('/pools')
+    user = request.user
+    return render(request, 'problems/pools.html', {
+        'user': user
+    })

@@ -10,56 +10,59 @@
     <title>{% block title %}Convenient tasks{% endblock %}</title>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Convenient tasks</a>
-        </div>
+{% block content %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Convenient tasks</a>
+            </div>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/ask/">Tasks</a></li>
-                {% block extra_nav_buttons_left %} {% endblock %}
-            </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input id="search-input" type="number" class="form-control" placeholder="Go to task"
-                           {% if task %}
-                                value="{{ task.pk }}"
-                           {% else %}
-                                value="1"
-                           {% endif %}
-                    >
-                </div>
-                <button id="search-button" type="button" class="btn btn-default">Искать</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                {% block extra_nav_buttons_right %} {% endblock %}
-                {% if user %}
-                    <li><a><b>{{ user.username }}</b></a></li>
-                    <li><a href="/logout/">Log out</a> </li>
-                {% else %}
-                    <li><a href="/signup/">Sign up</a></li>
-                    <li><a href="/login/">Log in</a></li>
-                {% endif %}
-            </ul>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/tasks/">Tasks</a></li>
+                    {% block extra_nav_buttons_left %} {% endblock %}
+                </ul>
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input id="search-input" type="number" class="form-control" placeholder="Go to task"
+                               {% if task %}
+                                    value="{{ task.pk }}"
+                               {% else %}
+                                    value="1"
+                               {% endif %}
+                        >
+                    </div>
+                    <button id="search-button" type="button" class="btn btn-default">Искать</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    {% block extra_nav_buttons_right %} {% endblock %}
+                    {% if user %}
+                        <li><a><b>{{ user.username }}</b></a></li>
+                        <li><a href="/pools/">Мои наборы</a></li>
+                        <li><a href="/logout/">Log out</a> </li>
+                    {% else %}
+                        <li><a href="/signup/">Sign up</a></li>
+                        <li><a href="/login/">Log in</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-lg-2">{% block left_panel %}{% endblock %}</div>
+            <div class="col-md-2 col-lg-2">{% block center_panel %}{% endblock %}</div>
+            <div class="col-md-8 col-lg-8">{% block details_panel %}{% endblock %}</div>
         </div>
     </div>
-</nav>
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-2 col-lg-2">{% block left_panel %}{% endblock %}</div>
-        <div class="col-md-2 col-lg-2">{% block center_panel %}{% endblock %}</div>
-        <div class="col-md-8 col-lg-8">{% block details_panel %}{% endblock %}</div>
-    </div>
-</div>
+{% endblock %}
 
 {% block scripts %}
     <script src="http://code.jquery.com/jquery-latest.js"></script>

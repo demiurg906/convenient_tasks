@@ -19,6 +19,8 @@ DB_DIR = os.path.join(BASE_DIR, 'base')
 MEDIA_ROOT = os.path.join(DB_DIR, 'images')
 MEDIA_URL = '/media/'
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/tasks/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
