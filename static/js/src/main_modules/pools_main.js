@@ -2,7 +2,7 @@ import {
     ADD_TO_POOL, connect, default_handler, GET_TASK, NEW_POOL,
     TASKS_LIST
 } from "../modules/variables_and_constants";
-import {set_listeners_for_pool_buttons} from "../modules/pools_panel";
+import {initialize_pools_panel} from "../modules/pools_panel";
 import {
     initialize_tasks_list,
     receive_add_to_pool_message, receive_get_task_message, receive_new_pool_message,
@@ -11,13 +11,12 @@ import {
 
 $(document).ready(function () {
     connect('/problems/pools/', function (first_time) {
-        // set_listeners_for_pool_buttons();
         if (first_time) {
             $('#pool-favorite').click();
         }
     }, receive_message, true);
 
-    set_listeners_for_pool_buttons()
+    initialize_pools_panel();
     initialize_tasks_list(false);
 
     let handlers = {};

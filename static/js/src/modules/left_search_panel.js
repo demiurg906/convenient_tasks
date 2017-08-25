@@ -3,7 +3,7 @@ import {get_new_list} from './tasks_list_panel';
 export const section_button = $('#sections button');
 export const subsection_button = $('#subsections button');
 
-export function set_listeners_for_sections_dropdown(name) {
+function set_listeners_for_sections_dropdown(name) {
     $('#' + name + ' li').click(function () {
         console.log($(this).text());
         $('#' + name + ' button').text($(this).text());
@@ -11,7 +11,7 @@ export function set_listeners_for_sections_dropdown(name) {
     });
 }
 
-export function initialize_slider(socket) {
+function initialize_slider() {
     let slider = $('#grade-slider');
 
     slider.slider({
@@ -35,4 +35,10 @@ export function initialize_slider(socket) {
     slider.on('slidechange', function( event, ui ) {
         get_new_list();
     } );
+}
+
+export function initialize_left_panel() {
+    initialize_slider();
+    set_listeners_for_sections_dropdown('sections');
+    set_listeners_for_sections_dropdown('subsections');
 }

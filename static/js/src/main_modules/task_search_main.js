@@ -1,4 +1,4 @@
-import {initialize_slider, set_listeners_for_sections_dropdown} from "../modules/left_search_panel";
+import {initialize_left_panel} from "../modules/left_search_panel";
 import {
     get_new_list, initialize_tasks_list, receive_add_to_pool_message, receive_get_task_message,
     receive_new_pool_message,
@@ -11,13 +11,12 @@ import {
 
 $(document).ready(function() {
     connect('/problems/tasks/', function (first_time) {
-        set_listeners_for_sections_dropdown('sections');
-        set_listeners_for_sections_dropdown('subsections');
         if (first_time) {
             get_new_list(socket);
         }
     }, receive_message, true);
-    initialize_slider();
+
+    initialize_left_panel();
     initialize_tasks_list(true);
 
     let handlers = {};
@@ -32,4 +31,3 @@ $(document).ready(function() {
         handler(data);
     }
 });
-
