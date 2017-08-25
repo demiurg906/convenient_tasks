@@ -84,7 +84,7 @@ export function receive_task_list_message(message) {
 export function receive_get_task_message(message) {
     $('#task-detail').replaceWith(message.task);
     update_pool_buttons_listeners();
-    $('#new-pool-button').keyup(function(e){
+    $('#new-pool-dropdown-button').keyup(function(e){
         if(e.keyCode === 13) {
             let pool_name = $(this).val();
             if (pool_name.length !== 0) {
@@ -113,7 +113,7 @@ export function receive_new_pool_message(message) {
 }
 
 function update_pool_buttons_listeners() {
-    $('.pool-button').each(function () {
+    $('.pool-list-dropdown-button').each(function () {
         $(this).click(function () {
             send({
                 message_type: ADD_TO_POOL,

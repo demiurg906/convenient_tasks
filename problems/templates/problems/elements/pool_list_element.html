@@ -1,4 +1,4 @@
-<li id="pool-{{ pool.pk }}"><a class="pool-button" pool_pk="{{ pool.pk }}" href="#">
+<li id="pool-{{ pool.pk }}"><a class="pool-list-dropdown-button" pool_pk="{{ pool.pk }}" href="#">
     {{ pool.name }}
     {% if task in pool.tasks.all %}
         <span class="glyphicon glyphicon-ok"></span>

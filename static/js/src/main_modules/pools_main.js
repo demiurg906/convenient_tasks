@@ -11,12 +11,13 @@ import {
 
 $(document).ready(function () {
     connect('/problems/pools/', function (first_time) {
-        set_listeners_for_pool_buttons();
+        // set_listeners_for_pool_buttons();
         if (first_time) {
             $('#pool-favorite').click();
         }
     }, receive_message, true);
 
+    set_listeners_for_pool_buttons()
     initialize_tasks_list(false);
 
     let handlers = {};
