@@ -1,20 +1,23 @@
 import {initialize_left_panel} from "../modules/left_search_panel";
 import {
+    connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST
+} from "../modules/variables_and_constants";
+import {
     get_new_list, initialize_tasks_list, receive_add_to_pool_message, receive_get_task_message,
     receive_new_pool_message,
     receive_task_list_message
 } from "../modules/tasks_list_panel"
-import {
-    socket, connect, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST,
-    default_handler
-} from "../modules/variables_and_constants";
+
+/**
+ * Основной скрипт для страницы с набораби задач
+ */
 
 $(document).ready(function() {
     connect('/problems/tasks/', function (first_time) {
         if (first_time) {
-            get_new_list(socket);
+            get_new_list();
         }
-    }, receive_message, true);
+    }, receive_message);
 
     initialize_left_panel();
     initialize_tasks_list(true);

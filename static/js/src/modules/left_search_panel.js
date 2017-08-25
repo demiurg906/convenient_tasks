@@ -1,8 +1,17 @@
 import {get_new_list} from './tasks_list_panel';
 
+/**
+ * Модуль с функциями панели с параметрами поиска
+ */
+
+// ссылки на кнопки выбора секций
 export const section_button = $('#sections button');
 export const subsection_button = $('#subsections button');
 
+/**
+ * Эта функция устанавливает обработчики для выпажающих списков секций и подсекций
+ * @param name имя элемента
+ */
 function set_listeners_for_sections_dropdown(name) {
     $('#' + name + ' li').click(function () {
         console.log($(this).text());
@@ -11,6 +20,9 @@ function set_listeners_for_sections_dropdown(name) {
     });
 }
 
+/**
+ * Эта функция инициализирует слайдер для выбора классов
+ */
 function initialize_slider() {
     let slider = $('#grade-slider');
 
@@ -37,6 +49,9 @@ function initialize_slider() {
     } );
 }
 
+/**
+ * Функция, инициализирующая все элементы панели поиска
+ */
 export function initialize_left_panel() {
     initialize_slider();
     set_listeners_for_sections_dropdown('sections');

@@ -1,11 +1,32 @@
+/**
+ * Этот модуль содержит общие константы,
+ * а также логику сокета, по которому идет соединие с сервером
+ * @type {string}
+ */
+
+/**
+ * Возможные команды серверу
+ */
 export const TASKS_LIST = 'tasks_list';
 export const GET_TASK = 'get_task';
 export const  ADD_TO_POOL = 'add_to_pool';
 export const NEW_POOL = 'new_pool';
 
+// сам сокет
 export let socket;
 
-export function connect(address, onopen, receive_message, first_time) {
+/**
+ * Эта функция инициализирует сокет
+ * @param address: адрес соединения
+ * @param onopen: функция, вызываемая при открытии сокета,
+ *                принимает булев параметр first_time, который
+ *                позволяет определить логику, которая должна
+ *                выполниться только при открытии страницы
+ * @param receive_message: функция, вызываемая при получении
+ *                сообщения от сервера
+ * @param first_time: служебный булев параметр (см. onopen)
+ */
+export function connect(address, onopen, receive_message, first_time=true) {
     socket = new WebSocket('ws://' + window.location.host + address);
     // Type of information received by websocket
     // socket.binaryType = 'arraybuffer';
@@ -21,6 +42,19 @@ export function connect(address, onopen, receive_message, first_time) {
     };
 }
 
-export function default_handler (data){
+/**
+ * Дефолтный обработчик ответов от сервера, который исользуется
+ * для неидентифицированных ответов
+ * @param data
+ */
+export function default_handler(data){
     console.error('Incorrect message type: ' + data.message_type);
+}
+
+/**
+ * Функция, которая отсылает сообщение серверу
+ * @param data: само сообщение
+ */
+export function send(data) {
+    socket.send(JSON.stringify(data));
 }
