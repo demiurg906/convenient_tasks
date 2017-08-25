@@ -3,13 +3,14 @@ import {
     connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST
 } from "../modules/variables_and_constants";
 import {
-    get_new_list, initialize_tasks_list, receive_add_to_pool_message, receive_get_task_message,
-    receive_new_pool_message,
-    receive_task_list_message
-} from "../modules/tasks_list_panel"
+    get_new_list, initialize_tasks_list, receive_task_list_message} from "../modules/tasks_list_panel"
+import {
+    receive_add_to_pool_message, receive_get_task_message,
+    receive_new_pool_message
+} from "../modules/task_details_panel";
 
 /**
- * Основной скрипт для страницы с набораби задач
+ * Основной скрипт для страницы с наборами задач
  */
 
 $(document).ready(function() {

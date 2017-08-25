@@ -44,7 +44,7 @@ function initialize_slider() {
         }
     });
 
-    slider.on('slidechange', function( event, ui ) {
+    slider.on('slidechange', function() {
         get_new_list();
     } );
 }
@@ -56,4 +56,11 @@ export function initialize_left_panel() {
     initialize_slider();
     set_listeners_for_sections_dropdown('sections');
     set_listeners_for_sections_dropdown('subsections');
+}
+
+/**
+ * Эта функция возвращает значения слайдера
+ */
+export function get_grade_slider_values() {
+    return $('#grade-slider').data().uiSlider.options.values;
 }

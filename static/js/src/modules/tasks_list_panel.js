@@ -1,9 +1,8 @@
-import {send, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST} from '../modules/variables_and_constants';
-import {section_button, subsection_button} from './left_search_panel'
+import {send, GET_TASK, TASKS_LIST} from '../modules/variables_and_constants';
+import {get_grade_slider_values, section_button, subsection_button} from './left_search_panel'
 
 /**
  * Модуль с функциями панели со списком задач
- * @type {string}
  */
 
 /**
@@ -45,7 +44,7 @@ function disable_more_tasks_button() {
  * @param action: NEW_LIST или UPDATE_LIST
  */
 function send_request_for_search_list_of_tasks(action) {
-    let grades = $('#grade-slider').data().uiSlider.options.values;
+    let grades = get_grade_slider_values();
     send({
         message_type: TASKS_LIST,
         n: N,
@@ -111,7 +110,7 @@ export function receive_task_list_message(message) {
     update_listeners();
     // если был получен новый список, то активиурет первую задачу
     if (message.action === NEW_LIST) {
-        let button = $('#tasks-list button:first-child');
+        let button = $('#tasks-list').find('button:first-child');
         if (button.length > 0) {
             button.click()
         } else {
@@ -120,68 +119,6 @@ export function receive_task_list_message(message) {
             disable_more_tasks_button()
         }
     }
-}
-
-/**
- * Эта функция обрабатывает ответ сервера на запрос
- * информации о задаче
- */
-export function receive_get_task_message(message) {
-    $('#task-detail').replaceWith(message.task);
-    update_pool_buttons_listeners();
-}
-
-/**
- * Эта функция обрабатывает ответ сервера на запрос
- * на добавление задачи в набор / удаление ее оттуда
- * @param message
- */
-export function receive_add_to_pool_message(message) {
-    if (message.status === 'OK') {
-        let pool_id = '#' + message.pool_id;
-        $(pool_id).replaceWith(message.pool_html);
-        update_pool_buttons_listeners()
-    }
-}
-
-/**
- * Эта функция обрабатывает ответ сервера на запрос
- * на добавление нового набора в список наборов пользователя
- * @param message
- */
-export function receive_new_pool_message(message) {
-    $('#pool-divider').before(message.pool_html);
-    update_pool_buttons_listeners();
-}
-
-/**
- * Эта функция обновляет обработчики нажатий на кнопки
- * наборов задач
- */
-function update_pool_buttons_listeners() {
-    $('.pool-list-dropdown-button').each(function () {
-        $(this).click(function () {
-            send({
-                message_type: ADD_TO_POOL,
-                pool_pk: $(this).attr('pool_pk'),
-                task_pk: $('#task-detail').attr('task_pk')
-            })
-        });
-    });
-    // добавить новый набор при нажатии Enter
-    $('#new-pool-dropdown-button').keyup(function(e){
-        if(e.keyCode === 13) {
-            let pool_name = $(this).val();
-            if (pool_name.length !== 0) {
-                send({
-                    message_type: NEW_POOL,
-                    pool_name: pool_name,
-                    task_pk: $('#task-detail').attr('task_pk')
-                })
-            }
-            $(this).val('');
-        }
-    });
 }
 
 /**
@@ -207,7 +144,7 @@ export function initialize_tasks_list(search) {
     } else {
         send_request = send_request_for_tasks_of_pool
     }
-    $('#give-me-more').click(function (event) {
+    $('#give-me-more').click(function () {
         send_request(UPDATE_LIST);
     });
 }
