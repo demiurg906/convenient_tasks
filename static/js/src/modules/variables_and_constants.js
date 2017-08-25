@@ -20,3 +20,7 @@ export function connect(address, onopen, receive_message, first_time) {
         }, 5000)
     };
 }
+
+export function default_handler (data){
+    console.error('Incorrect message type: ' + data.message_type);
+}

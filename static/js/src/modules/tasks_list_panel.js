@@ -5,6 +5,10 @@ const UPDATE_LIST = 'update_list';
 
 const N = 10;
 
+// Переменная, определяющая, по какой логике отсылать запросы на список задач,
+// по логике поиска или списка наборов
+let send_request;
+
 import {section_button, subsection_button} from './left_search_panel'
 
 function enable_more_tasks_button() {
@@ -23,6 +27,16 @@ function send_request_for_search_list_of_tasks(action) {
         max_grade: grades[1],
         action: action
     });
+}
+
+function send_request_for_tasks_of_pool(action) {
+    send({
+        message_type: TASKS_LIST,
+        n: N,
+        max_pk: $('#tasks-list').attr('max_pk'),
+        pool_pk: $('#pools-list').attr('chosen_pool_pk'),
+        action: action
+    })
 }
 
 function send(data) {
@@ -115,11 +129,16 @@ export function get_new_list() {
     tasks_list.attr('max_pk', 0);
     tasks_list.empty();
     enable_more_tasks_button();
-    send_request_for_search_list_of_tasks(NEW_LIST);
+    send_request(NEW_LIST);
 }
 
-export function initialize_tasks_list() {
+export function initialize_tasks_list(search) {
+    if (search) {
+        send_request = send_request_for_search_list_of_tasks
+    } else {
+        send_request = send_request_for_tasks_of_pool
+    }
     $('#give-me-more').click(function (event) {
-        send_request_for_search_list_of_tasks(UPDATE_LIST);
+        send_request(UPDATE_LIST);
     });
 }

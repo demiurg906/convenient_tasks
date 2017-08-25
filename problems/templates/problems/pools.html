@@ -1,7 +1,11 @@
 {% extends 'problems/base.html' %}
 
 {% block left_panel %}
-
+    <div id="pools-list" style="overflow: auto; max-height: 700px;" class="btn-group-vertical">
+    {% for pool in user.taskpool_set.all %}
+        {% include 'problems/elements/pool_button.html' %}
+    {% endfor %}
+    </div>
 {% endblock %}
 
 {% block center_panel %}

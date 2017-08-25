@@ -1,6 +1,8 @@
 import json
 import logging
 
+from functools import partial
+
 from channels.auth import channel_session_user_from_http, channel_session_user
 from channels.message import Message
 from django.template.loader import render_to_string
@@ -17,12 +19,17 @@ ADD_TO_POOL = 'add_to_pool'
 NEW_POOL = 'new_pool'
 
 
-def generate_list_of_tasks(request, *args):
-    query_set = Task.objects\
-        .filter(section__name=request['section'])\
-        .filter(subsection__name=request['subsection'])\
-        .filter(grades__in=Grade.objects.range(request['min_grade'], request['max_grade']))\
-        .distinct()
+def generate_list_of_tasks(request, user: User, *args, search=False):
+    if search:
+        query_set = Task.objects \
+            .filter(section__name=request['section']) \
+            .filter(subsection__name=request['subsection']) \
+            .filter(grades__in=Grade.objects.range(request['min_grade'], request['max_grade'])) \
+            .distinct()
+    else:
+        query_set = user.taskpool_set \
+            .get(pk=request['pool_pk'])\
+            .tasks.all()
     max_pk = int(request.get('max_pk', 0))
     if max_pk > 0:
         query_set = query_set.filter(pk__gt=max_pk)
@@ -101,14 +108,6 @@ def create_new_pool(request, user: User):
     }
 
 
-handlers = {
-    TASKS_LIST: generate_list_of_tasks,
-    GET_TASK: generate_task_template,
-    ADD_TO_POOL: add_task_to_pool,
-    NEW_POOL: create_new_pool
-}
-
-
 def send_reply(message: Message, data):
     message.reply_channel.send({'text': json.dumps(data)})
 
@@ -120,6 +119,27 @@ def ws_connect(message):
 
 @channel_session_user
 def ws_search_message(message: Message):
+    handlers = {
+        TASKS_LIST: partial(generate_list_of_tasks, search=True),
+        GET_TASK: generate_task_template,
+        ADD_TO_POOL: add_task_to_pool,
+        NEW_POOL: create_new_pool
+    }
+    ws_message(message, handlers)
+
+
+@channel_session_user
+def ws_pools_message(message: Message):
+    handlers = {
+        TASKS_LIST: partial(generate_list_of_tasks, search=False),
+        GET_TASK: generate_task_template,
+        ADD_TO_POOL: add_task_to_pool,
+        NEW_POOL: create_new_pool
+    }
+    ws_message(message, handlers)
+
+
+def ws_message(message, handlers):
     request = json.loads(message.content['text'])
     message_type = request['message_type']
     if message_type in handlers:
@@ -127,8 +147,3 @@ def ws_search_message(message: Message):
         send_reply(message, response)
     else:
         logger.error(f'Неизвестный тип запроса')
-
-
-@channel_session_user
-def ws_pools_message(message: Message):
-    pass
