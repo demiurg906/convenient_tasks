@@ -1,1 +1,19 @@
 {% extends 'problems/base.html' %}
+
+{% block left_panel %}
+
+{% endblock %}
+
+{% block center_panel %}
+    {% include 'problems/elements/tasks_list_panel.html' %}
+{% endblock %}
+
+{% block details_panel %}
+    {% include 'problems/elements/task_detail_default_panel.html' %}
+{% endblock %}}
+
+{% block scripts %}
+    {{ block.super }}
+    {% load static %}
+    <script src="{% static 'js/task_search_main.bundle.js' %}"></script>
+{% endblock %}
