@@ -40,7 +40,7 @@ function initialize_slider() {
         let vals = opt.max - opt.min;
         for (let i = 0; i <= vals; i++) {
             let el = $('<label>' + (i + opt.min) + '</label>').css('left', (i / vals * 100) + '%');
-            $('#grade_slider').append(el);
+            slider.append(el);
         }
     });
 
