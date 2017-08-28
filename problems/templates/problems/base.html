@@ -10,7 +10,7 @@
     <title>{% block title %}Convenient tasks{% endblock %}</title>
 </head>
 <body>
-{% block content %}
+{% block no_bar_content %}
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -56,11 +56,13 @@
     </nav>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-2 col-lg-2">{% block left_panel %}{% endblock %}</div>
-            <div class="col-md-2 col-lg-2">{% block center_panel %}{% endblock %}</div>
-            <div class="col-md-8 col-lg-8">{% block details_panel %}{% endblock %}</div>
-        </div>
+        {% block content %}
+            <div class="row">
+                <div class="col-md-2 col-lg-2">{% block left_panel %}{% endblock %}</div>
+                <div class="col-md-2 col-lg-2">{% block center_panel %}{% endblock %}</div>
+                <div class="col-md-8 col-lg-8">{% block details_panel %}{% endblock %}</div>
+            </div>
+        {% endblock %}
     </div>
 {% endblock %}
 
