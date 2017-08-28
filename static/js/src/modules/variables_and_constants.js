@@ -4,6 +4,26 @@
  */
 
 /**
+ * константы, дающие другим модулям понять, логиу какой страницы использовать
+ */
+export let POOL_PAGE = false;
+export let SEARCH_PAGE = false;
+
+/**
+ * инициализирует страницу как страницу с наборами
+ */
+export function init_pool_page() {
+    POOL_PAGE = true;
+}
+
+/**
+ * инициализирует страницу как страницу поиска
+ */
+export function init_search_page() {
+    SEARCH_PAGE = true;
+}
+
+/**
  * Возможные команды серверу
  */
 export const TASKS_LIST = 'tasks_list';

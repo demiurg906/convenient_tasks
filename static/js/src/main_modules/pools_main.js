@@ -1,6 +1,6 @@
 import {initialize_pools_panel} from "../modules/pools_panel";
 import {
-    connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST
+    connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST, init_pool_page
 } from "../modules/variables_and_constants";
 import {initialize_tasks_list, receive_task_list_message} from "../modules/tasks_list_panel";
 import {
@@ -13,6 +13,7 @@ import {
  */
 
 $(document).ready(function () {
+    init_pool_page();
     connect('/problems/pools/', function (first_time) {
         if (first_time) {
             $('#pool-favorite').click();

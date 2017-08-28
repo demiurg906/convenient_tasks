@@ -42,7 +42,7 @@ def generate_list_of_tasks(request, user: User, *args, search=False):
         max_pk = 0
     return {
         'message_type': TASKS_LIST,
-        'tasks': [render_to_string('problems/elements/task_button.html', {
+        'tasks': [render_to_string('problems/elements/tasks_list_element.html', {
             'task': task,
             'tags': Tag.objects.get_for_object(task)
         }) for task in tasks],
@@ -51,11 +51,11 @@ def generate_list_of_tasks(request, user: User, *args, search=False):
     }
 
 
-def generate_task_template(request, user):
+def generate_task_template(request, user, template='problems/elements/task_detail.html'):
     pk = int(request['pk'])
     if pk > 0:
         task = Task.objects.get(pk=request['pk'])
-        task_html = render_to_string('problems/elements/task_detail.html', {'task': task, 'user': user})
+        task_html = render_to_string(template, {'task': task, 'user': user})
     else:
         task_html = render_to_string('problems/elements/no_task_placeholder.html')
     return {
@@ -92,7 +92,7 @@ def add_task_to_pool(request, user: User):
         'message_type': ADD_TO_POOL,
         'status': status,
         'pool_html': pool_html,
-        'pool_id': pool_id
+        'pool_id': pool_id,
     }
 
 
@@ -121,7 +121,7 @@ def ws_connect(message):
 def ws_search_message(message: Message):
     handlers = {
         TASKS_LIST: partial(generate_list_of_tasks, search=True),
-        GET_TASK: generate_task_template,
+        GET_TASK: partial(generate_task_template, template='problems/elements/task_detail_search.html'),
         ADD_TO_POOL: add_task_to_pool,
         NEW_POOL: create_new_pool
     }
@@ -132,7 +132,7 @@ def ws_search_message(message: Message):
 def ws_pools_message(message: Message):
     handlers = {
         TASKS_LIST: partial(generate_list_of_tasks, search=False),
-        GET_TASK: generate_task_template,
+        GET_TASK: partial(generate_task_template, template='problems/elements/task_detail_pools.html'),
         ADD_TO_POOL: add_task_to_pool,
         NEW_POOL: create_new_pool
     }

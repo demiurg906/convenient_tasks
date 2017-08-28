@@ -27,20 +27,8 @@
         </ul>
     </div>
     <div class="col-md-1 col-lg-1">
-        <div class="input-group">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Добавить в набор<span class="caret"></span></button>
-                <ul class="dropdown-menu" id="pool-list-dropdown">
-                    {% for pool in user.taskpool_set.all %}
-                        {% include 'problems/elements/pool_list_element.html' %}
-                    {% endfor %}
-                    <li class="divider" id="pool-divider"></li>
-                    <li>
-                        <input class="form-control" id="new-pool-dropdown-button" placeholder="Новый набор">
-                    </li>
-                </ul>
-            </div>
-        </div>
+        {% block buttons %}
+        {% endblock %}
     </div>
 </div>
 </div>

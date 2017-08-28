@@ -1,6 +1,6 @@
 import {initialize_left_panel} from "../modules/left_search_panel";
 import {
-    connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST
+    connect, default_handler, ADD_TO_POOL, GET_TASK, NEW_POOL, TASKS_LIST, init_search_page
 } from "../modules/variables_and_constants";
 import {
     get_new_list, initialize_tasks_list, receive_task_list_message} from "../modules/tasks_list_panel"
@@ -14,6 +14,7 @@ import {
  */
 
 $(document).ready(function() {
+    init_search_page();
     connect('/problems/tasks/', function (first_time) {
         if (first_time) {
             get_new_list();
