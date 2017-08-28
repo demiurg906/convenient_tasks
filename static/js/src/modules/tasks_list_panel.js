@@ -78,6 +78,8 @@ function send_request_for_tasks_of_pool(action) {
  */
 function update_listeners() {
     $('.task-button').click(function () {
+        $('.task-button.active').removeClass('active');
+        $(this).addClass('active');
         get_task_description(this.getAttribute('pk'));
     });
 }

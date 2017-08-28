@@ -18,6 +18,8 @@ function set_listeners_for_pool_buttons() {
     $('#pools-list').children('button').each(function () {
         $(this).click(function () {
             $('#pools-list').attr('chosen_pool_pk', $(this).attr('pk'));
+            $('.pool-button.active').removeClass('active');
+            $(this).addClass('active');
             get_new_list();
         });
     });
