@@ -19,7 +19,7 @@ ADD_TO_POOL = 'add_to_pool'
 NEW_POOL = 'new_pool'
 
 
-def generate_list_of_tasks(request, user: User, *args, search=False):
+def generate_list_of_tasks(request, user: User, search=False):
     if search:
         query_set = Task.objects \
             .filter(section__name=request['section']) \
@@ -35,14 +35,14 @@ def generate_list_of_tasks(request, user: User, *args, search=False):
         query_set = query_set.filter(pk__gt=max_pk)
     tasks_iter = query_set.iterator()
     n = min(query_set.count(), request['n'])
-    tasks = [next(tasks_iter) for i in range(n)]
+    tasks = [next(tasks_iter) for _ in range(n)]
     if len(tasks) > 0:
         max_pk = tasks[-1].pk
     else:
         max_pk = 0
     return {
         'message_type': TASKS_LIST,
-        'tasks': [render_to_string('problems/elements/tasks_list_element.html', {
+        'tasks': [render_to_string('problems/elements/task_button.html', {
             'task': task,
             'tags': Tag.objects.get_for_object(task)
         }) for task in tasks],
