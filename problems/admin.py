@@ -43,7 +43,7 @@ def custom_titled_filter(title):
 
 @admin.register(Task)
 class TaskAdmin(nested_inline.admin.NestedModelAdmin):
-    list_display = ('task_name', 'tex_used', 'has_tip', 'has_solution', 'has_answer', 'section', 'subsection')
+    list_display = ('name', 'tex_used', 'has_tip', 'has_solution', 'has_answer', 'section', 'subsection')
     list_filter = ('tex_used',
                    ('section__name', custom_titled_filter('Section')),
                    ('subsection__name', custom_titled_filter('Subsection'))

@@ -1,4 +1,4 @@
-<h2>{{ task.task_name }}</h2>
+<h2>{{ task.name }}</h2>
 {% load problems_extras %}
 {% for section in task.tasksection_set.all %}
     <h3>{{ section.get_name }}</h3>

@@ -80,11 +80,11 @@ class Task(models.Model):
     def __str__(self):
         return f'Задача {str(self.pk)}'
 
-    def task_name(self):
+    def name(self):
         return str(self)
 
-    task_name.short_description = 'Task name'
-    task_name.admin_order_field = 'pk'
+    name.short_description = 'Task name'
+    name.admin_order_field = 'pk'
 
     def has_tip(self):
         return any(section.is_tip for section in self.tasksection_set.all())
