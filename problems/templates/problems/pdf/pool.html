@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ pool.name }}</title>
+</head>
+<body>
+    <h2>{{ pool.name }}</h2>
+    {% for task in pool.tasks.all %}
+        {% include 'problems/pdf/task.html' %}
+    {% endfor %}
+</body>
+</html>

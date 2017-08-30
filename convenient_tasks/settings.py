@@ -138,6 +138,9 @@ STATICFILES_DIRS = (
 
 STATIC_URL = '/static/'
 
+TEMPORARY_FOLDER = os.path.join(BASE_DIR, 'static', 'temp')
+USERS_FILES = 'users'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'asgiref.inmemory.ChannelLayer',

@@ -1,5 +1,8 @@
-<button type="button" class="btn btn-default pool-button" pk="{{ pool.pk }}" {% if pool.name == 'Избранное' %}
-id="pool-favorite"
-{% endif %}>
-    <h5>{{ pool.name }}</h5>
-</button>
+<div>
+    <button type="button" class="btn btn-default pool-button" pk="{{ pool.pk }}" {% if pool.name == 'Избранное' %}
+    id="pool-favorite"
+    {% endif %}>
+        <h5>{{ pool.name }}</h5>
+    </button>
+    <a class="btn btn-default pool-pdf" href="pdf?pk={{ pool.pk }}" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a>
+</div>

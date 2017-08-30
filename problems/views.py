@@ -1,7 +1,11 @@
-from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import render
+import pdfkit
 
-from problems.models import Task, Section, Subsection, User
+from django.contrib.auth.views import redirect_to_login
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
+
+from problems.models import Task, Section, Subsection, User, TaskPool
 
 
 def task_detail(request, pk):
@@ -29,3 +33,17 @@ def pools(request):
     return render(request, 'problems/pages/pools.html', {
         'user': request.user
     })
+
+
+def pool_pdf(request):
+    pool_pk = request.GET['pk']
+    pool = TaskPool.objects.get(pk=pool_pk)
+    pdf = generate_pdf('problems/pdf/pool.html', {'pool': pool})
+    # render_to_string('problems/pdf/pool.html', {'pool': pool})
+    return HttpResponse(pdf, content_type='application/pdf')
+
+
+def generate_pdf(template_name, context):
+    html = render_to_string(template_name, context)
+    pdf = pdfkit.from_string(html, False)
+    return pdf

@@ -1,6 +1,8 @@
+import os
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.db import models, IntegrityError
+from django.db import models
 from django.utils.safestring import mark_safe
 from tagging.fields import TagField
 from tagging.models import Tag
@@ -10,11 +12,13 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
         if not self.taskpool_set.filter(name='Избранное').exists():
-            favorites = TaskPool.objects.create(
+            TaskPool.objects.create(
                 name='Избранное',
                 user=self
             )
-
+        dir_name = os.path.join(settings.TEMPORARY_FOLDER, settings.USERS_FILES, str(self.username))
+        if not os.path.exists(dir_name):
+            os.mkdir(dir_name)
 
 
 class GradeManager(models.Manager):
@@ -66,7 +70,7 @@ class Task(models.Model):
     """
     tags = TagField(verbose_name='Теги')
 
-    section = models.ForeignKey(Section, related_name='section', verbose_name='Раздел')  # основной раздел (физика/математика)
+    section = models.ForeignKey(Section, related_name='section', verbose_name='Раздел')  # основной раздел
     subsection = models.ForeignKey(Subsection, related_name='subsection', verbose_name='Подраздел')  # подраздел
 
     grades = models.ManyToManyField(Grade, blank=True, verbose_name='Классы')  # классы для данной задачи

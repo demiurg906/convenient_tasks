@@ -21,14 +21,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from problems.views import task_search, task_detail, pools
+from problems.views import task_search, task_detail, pools, pool_pdf
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^login/', auth.LoginView.as_view(template_name='problems/pages/login.html'), name='login'),
-    url(r'^logout/', auth.LogoutView.as_view(next_page='/login'), name='logout'),
+    url(r'^admin/$', admin.site.urls),
+    url(r'^login/$', auth.LoginView.as_view(template_name='problems/pages/login.html'), name='login'),
+    url(r'^logout/$', auth.LogoutView.as_view(next_page='/login'), name='logout'),
     url(r'^tasks/$', task_search),
     url(r'^task/(?P<pk>\d+)/$', task_detail),
-    url(r'^pools/', pools),
+    url(r'^pools/$', pools),
+    url(r'^pools/pdf/$', pool_pdf),
     url(r'^$', TemplateView.as_view(template_name='index.html'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

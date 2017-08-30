@@ -1,0 +1,12 @@
+<h2>{{ task.task_name }}</h2>
+{% load problems_extras %}
+{% for section in task.tasksection_set.all %}
+    <h3>{{ section.get_name }}</h3>
+    <p>{{ section.text|math }}</p>
+    {% for image in section.image_set.all %}
+        <figure>
+            <img class="img-responsive" {{ image.tag_params }}/>
+            <figcaption>Рис. {{ image.number }}</figcaption>
+        </figure>
+    {% endfor %}
+{% endfor %}
