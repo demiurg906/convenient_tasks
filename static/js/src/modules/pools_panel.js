@@ -15,7 +15,7 @@ export function initialize_pools_panel() {
  * Эта функция устанавливает обработчики для элементов списка наборов
  */
 function set_listeners_for_pool_buttons() {
-    $('#pools-list').children('button').each(function () {
+    $('#pools-list').find('button').each(function () {
         $(this).click(function () {
             $('#pools-list').attr('chosen_pool_pk', $(this).attr('pk'));
             $('.pool-button.active').removeClass('active');
