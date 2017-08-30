@@ -39,7 +39,6 @@ def pool_pdf(request):
     pool_pk = request.GET['pk']
     pool = TaskPool.objects.get(pk=pool_pk)
     pdf = generate_pdf('problems/pdf/pool.html', {'pool': pool})
-    # render_to_string('problems/pdf/pool.html', {'pool': pool})
     return HttpResponse(pdf, content_type='application/pdf')
 
 
