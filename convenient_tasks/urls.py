@@ -24,7 +24,7 @@ from django.views.generic import TemplateView
 from problems.views import task_search, task_detail, pools, pool_pdf
 
 urlpatterns = [
-    url(r'^admin/$', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth.LoginView.as_view(template_name='problems/pages/login.html'), name='login'),
     url(r'^logout/$', auth.LogoutView.as_view(next_page='/login'), name='logout'),
     url(r'^tasks/$', task_search),
