@@ -35,7 +35,7 @@ django.setup()
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0.2
 
-DEPTH_LIMIT = 100
+DEPTH_LIMIT = 6
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
