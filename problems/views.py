@@ -1,15 +1,19 @@
 import pdfkit
 
 from django.contrib.auth.views import redirect_to_login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 
 from problems.models import Task, Section, Subsection, User, TaskPool
 
 
+def index(request):
+    return HttpResponseRedirect(redirect_to='/tasks')
+
+
 def task_detail(request, pk):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect_to_login(request.path)
     return render(request, 'problems/pages/task.html', {
         'task': Task.objects.get(pk=pk),
@@ -18,7 +22,7 @@ def task_detail(request, pk):
 
 
 def task_search(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect_to_login('/tasks')
     return render(request, 'problems/pages/tasks_search.html', {
         'sections': Section.objects.all(),
@@ -28,7 +32,7 @@ def task_search(request):
 
 
 def pools(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect_to_login('/pools')
     return render(request, 'problems/pages/pools.html', {
         'user': request.user

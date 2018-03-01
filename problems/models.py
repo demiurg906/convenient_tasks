@@ -33,7 +33,7 @@ class Grade(models.Model):
     PATTERN = '{} класс'
 
     grade = models.SmallIntegerField(unique=True, verbose_name='Класс')
-    tag = models.OneToOneField(Tag)
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE)
 
     objects = GradeManager()
 
@@ -50,7 +50,7 @@ class AbstractSection(models.Model):
     (как основного раздела (физика/математика)), так и побочных
     """
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
-    tag = models.OneToOneField(Tag)
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -61,7 +61,7 @@ class Section(AbstractSection):
 
 
 class Subsection(AbstractSection):
-    main_section = models.ForeignKey(Section)
+    main_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
 
 class Task(models.Model):
@@ -70,8 +70,8 @@ class Task(models.Model):
     """
     tags = TagField(verbose_name='Теги')
 
-    section = models.ForeignKey(Section, related_name='section', verbose_name='Раздел')  # основной раздел
-    subsection = models.ForeignKey(Subsection, related_name='subsection', verbose_name='Подраздел')  # подраздел
+    section = models.ForeignKey(Section, related_name='section', verbose_name='Раздел', on_delete=models.CASCADE)  # основной раздел
+    subsection = models.ForeignKey(Subsection, related_name='subsection', verbose_name='Подраздел', on_delete=models.CASCADE)  # подраздел
 
     grades = models.ManyToManyField(Grade, blank=True, verbose_name='Классы')  # классы для данной задачи
 
@@ -124,7 +124,7 @@ class TaskSection(models.Model):
 
     text = models.TextField(default='', verbose_name='Текст')
     type = models.CharField(max_length=1, choices=TYPOS.items(), verbose_name='Тип')
-    task = models.ForeignKey(Task)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.TYPOS[self.type]} для "{self.task}"'
@@ -169,8 +169,8 @@ class Image(models.Model):
 class TaskSource(models.Model):
     name = models.CharField(max_length=100, null=True, verbose_name='Имя')  # название источника
     url = models.URLField(null=True)  # ссылка на источник
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор')  # ссылка на автора
-    source = models.OneToOneField(Task)  # ссылка на задачу
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор', on_delete=models.CASCADE)  # ссылка на автора
+    source = models.OneToOneField(Task, on_delete=models.CASCADE)  # ссылка на задачу
 
     def __str__(self):
         return f'Источник для "{self.source}"'
@@ -180,7 +180,7 @@ class TaskPool(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(default='')
     tasks = models.ManyToManyField(Task)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'"{self.name}" of user {self.user}'
